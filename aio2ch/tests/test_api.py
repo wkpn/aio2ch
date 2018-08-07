@@ -68,7 +68,7 @@ async def test_get_thread_posts_no_board_provided():
 
 
 @pytest.mark.asyncio
-async def test_get_single_thread():
+async def test_get_thread_media():
     test_thread_data = {
         'comment': '',
         'num': 30972,
@@ -83,13 +83,9 @@ async def test_get_single_thread():
 
     test_thread = Thread(test_thread_data, board)
 
-    status, test_thread_posts = await api.get_thread_posts(test_thread)
+    status, thread_media = await api.get_thread_media(test_thread)
 
     assert status >= 200
-    assert len(test_thread_posts) > 0
+    assert len(thread_media) > 0
+    assert(all(isinstance(file, File) for file in thread_media))
 
-    first_test_thread_post = test_thread_posts[0]
-
-    assert isinstance(first_test_thread_post, Post)
-    assert len(first_test_thread_post.files) > 0
-    assert(all(isinstance(file, File) for file in first_test_thread_post.files))

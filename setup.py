@@ -14,7 +14,6 @@ setup(
     url='https://github.com/wkpn/aio2ch',
     license=__license__,
     author=__author__,
-    author_email='',
     description='Fully asynchronous API wrapper for 2ch.hk (dvach)',
     long_description=long_description,
     install_requires=['aiohttp'],

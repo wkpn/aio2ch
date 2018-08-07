@@ -1,7 +1,6 @@
 aio2ch
 ======
 
-
 Fully asynchronous API wrapper for 2ch.hk (dvach, Двач)
 
 Requirements
@@ -58,7 +57,7 @@ Get top threads from a board sorted by method (*views*, *score* or *posts_count*
     >>> top_threads
     [<Thread 180894312>, <Thread 180946622>, <Thread 180963318>]
 
-Get all thread's posts (`thread` is instance of `Thread`)
+Get all thread's posts (`thread` is an instance of `Thread`)
 
 .. code-block:: python
 
@@ -67,7 +66,7 @@ Get all thread's posts (`thread` is instance of `Thread`)
     >>> thread_posts
     [<Post 180894312>, ... ]
 
-Get all media in all thread's posts (images, webm etc.)
+Get all media in all thread's posts (images, webm and so on)
 
 .. code-block:: python
 
