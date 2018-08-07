@@ -1,6 +1,10 @@
 aio2ch
 ======
 
+|License|
+|PyPi|
+|Python|
+
 Fully asynchronous API wrapper for 2ch.hk (dvach, Двач)
 
 Requirements
@@ -74,3 +78,10 @@ Get all media in all thread's posts (images, webm and so on)
 
     >>> thread_media
     [<File name:15336559148500.jpg, path:/b/src/180979032/15336559148500.jpg, size:19>, ... ]
+
+.. |License| image:: https://img.shields.io/pypi/l/aio2ch.svg
+    :target: https://pypi.python.org/pypi/ai02ch
+.. |PyPi| image:: https://img.shields.io/pypi/v/aio2ch.svg
+    :target: https://pypi.python.org/pypi/aio2ch
+.. |Python| image:: https://img.shields.io/pypi/pyversions/aio2ch.svg
+    :target: https://pypi.python.org/pypi/aio2ch
