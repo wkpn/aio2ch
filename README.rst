@@ -5,7 +5,7 @@ aio2ch
 |PyPi|
 |Python|
 
-Fully asynchronous API wrapper for 2ch.hk (dvach, Двач)
+Fully asynchronous read-only API wrapper for 2ch.hk (dvach, Двач)
 
 Requirements
 ------------
