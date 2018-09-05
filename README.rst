@@ -28,7 +28,7 @@ Build from source
     $ python3 setup.py install
 
 Usage
---------------------
+-----
 .. code-block:: python
 
     >>> from aio2ch.api import Api
@@ -78,6 +78,12 @@ Get all media in all thread's posts (images, webm and so on)
 
     >>> thread_media
     [<File name:15336559148500.jpg, path:/b/src/180979032/15336559148500.jpg, size:19>, ... ]
+
+Download all thread media
+
+.. code-block:: python
+
+    >>> await api.download_thread_media(files=thread_media, save_to='./downloads')
 
 .. |License| image:: https://img.shields.io/pypi/l/aio2ch.svg
     :target: https://pypi.python.org/pypi/aio2ch

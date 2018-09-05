@@ -3,7 +3,9 @@ __all__ = 'Api'
 from .objects import *
 from .settings import *
 from .exceptions import *
+import aiofiles
 import aiohttp
+import asyncio
 
 
 class Api:
@@ -22,17 +24,22 @@ class Api:
         self.url = api_url
 
     async def get_boards(self):
-        status, result = await self._get(url='%s/makaba/mobile.fcgi?task=get_boards' % self.api_url)
+        status, boards = await self._get(url='%s/makaba/mobile.fcgi?task=get_boards' % self.api_url)
 
-        return status, [Board(board) for board in sum(result.values(), [])]
+        return status, [Board(board) for board in sum(boards.values(), [])]
 
-    async def get_board_threads(self, board):
+    async def get_board_threads(self, board, keywords=None):
         if isinstance(board, Board):
             board = board.id
 
-        status, result = await self._get(url='%s/%s/threads.json' % (self.api_url, board))
+        status, threads = await self._get(url='%s/%s/threads.json' % (self.api_url, board))
+        threads = threads['threads']
 
-        return status, [Thread(thread, board) for thread in result['threads']]
+        if keywords:
+            return status, \
+                   [Thread(thread, board) for thread in threads if any(k in thread['comment'] for k in keywords)]
+
+        return status, [Thread(thread, board) for thread in threads]
 
     async def get_top_board_threads(self, board, method, num=5):
         if method not in SORTING_METHODS:
@@ -59,14 +66,31 @@ class Api:
         elif not board:
             raise NoBoardProvidedException('Board id is not provided')
 
-        status, result = await self._get(url='%s/%s/res/%s.json' % (self.api_url, board, thread))
+        status, posts = await self._get(url='%s/%s/res/%s.json' % (self.api_url, board, thread))
 
-        return status, [Post(post) for post in result['threads'][0]['posts']]
+        return status, [Post(post) for post in posts['threads'][0]['posts']]
 
     async def get_thread_media(self, thread, board=None):
         status, posts = await self.get_thread_posts(thread, board=board)
 
         return status, sum((post.files for post in posts if post.files), [])
+
+    async def download_thread_media(self, files, save_to, bound=10):
+        async def download(session, semaphore, file):
+            async with semaphore:
+                filename = save_to + file.name
+                url = self.api_url + file.path
+
+                response = await session.get(url)
+
+                async with aiofiles.open(filename, 'wb') as download_file:
+                    await download_file.write(await response.content.read())
+
+        async with aiohttp.ClientSession() as session:
+            semaphore = asyncio.Semaphore(bound)
+            download_tasks = (download(session, semaphore, file) for file in files)
+
+            await asyncio.gather(*download_tasks)
 
     async def _get(self, url, **kwargs):
         return await self._request('get', url, **kwargs)
@@ -78,5 +102,3 @@ class Api:
 
             async with method_func(url, **kwargs) as response:
                 return response.status, await response.json()
-
-

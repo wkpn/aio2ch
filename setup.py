@@ -16,7 +16,7 @@ setup(
     author=__author__,
     description='Fully asynchronous read-only API wrapper for 2ch.hk (dvach)',
     long_description=long_description,
-    install_requires=['aiohttp'],
+    install_requires=['aiohttp', 'aiofiles'],
     tests_require=['pytest', 'pytest-asyncio', 'pytest-cov'],
     keywords=['2ch', 'Двач', 'Dvach', 'api', 'wrapper', 'async'],
     zip_safe=False,
