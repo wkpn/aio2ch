@@ -83,7 +83,7 @@ Download all thread media
 
 .. code-block:: python
 
-    >>> await api.download_thread_media(files=thread_media, save_to='./downloads')
+    >>> await api.download_thread_media(files=thread_media, save_to='./downloads/')
 
 .. |License| image:: https://img.shields.io/pypi/l/aio2ch.svg
     :target: https://pypi.python.org/pypi/aio2ch
