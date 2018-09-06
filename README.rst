@@ -2,6 +2,7 @@ aio2ch
 ======
 
 |License|
+|Downloads|
 |PyPi|
 |Python|
 
@@ -87,6 +88,8 @@ Download all thread media
 
 .. |License| image:: https://img.shields.io/pypi/l/aio2ch.svg
     :target: https://pypi.python.org/pypi/aio2ch
+.. |Downloads| image:: https://pepy.tech/badge/aio2ch
+    :target: https://pepy.tech/project/aio2ch
 .. |PyPi| image:: https://img.shields.io/pypi/v/aio2ch.svg
     :target: https://pypi.python.org/pypi/aio2ch
 .. |Python| image:: https://img.shields.io/pypi/pyversions/aio2ch.svg
