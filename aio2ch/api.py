@@ -4,7 +4,7 @@ from .exceptions import NoBoardProvidedException, WrongSortMethodException
 from .objects import Board, File, Post, Thread
 from .settings import API_URL, SORTING_METHODS
 
-from typing import Any, Dict, List, Optional, Tuple, Type, Union
+from typing import Any, Dict, Iterable, Optional, Tuple, Type, Union
 from types import TracebackType
 
 from httpx import AsyncClient
@@ -17,11 +17,7 @@ class Api:
     __slots__ = ('_api_url', '__client')
 
     def __init__(self, api_url: Optional[str] = None):
-        if api_url:
-            self._api_url = api_url
-        else:
-            self._api_url = API_URL
-
+        self._api_url: str = API_URL if not api_url else api_url
         self.__client: AsyncClient = AsyncClient()
 
     @property
@@ -34,9 +30,10 @@ class Api:
 
     async def get_boards(self,
                          return_status: Optional[bool] = False
-                         ) -> Union[Tuple[int, List[Board]], List[Board]]:
-        status, boards = await self._get(url=f'{self.api_url}/makaba/mobile.fcgi?task=get_boards')
-        boards = [Board(board) for board in sum(boards.values(), [])]
+                         ) -> Union[Tuple[int, Tuple[Board]], Tuple[Board]]:
+        status, boards = await self._get(url=f'{self.api_url}/boards.json')
+        boards = boards['boards']
+        boards = tuple(Board(board) for board in boards)
 
         if return_status:
             return status, boards
@@ -44,18 +41,18 @@ class Api:
 
     async def get_board_threads(self,
                                 board: Union[str, Board],
-                                keywords: Optional[List[str]] = None,
+                                keywords: Optional[Iterable[str]] = None,
                                 return_status: Optional[bool] = False
-                                ) -> Union[Tuple[int, List[Thread]], List[Thread]]:
+                                ) -> Union[Tuple[int, Tuple[Thread]], Tuple[Thread]]:
         if isinstance(board, Board):
             board = board.id
 
         status, threads = await self._get(url=f'{self.api_url}/{board}/threads.json')
         threads = threads['threads']
-        threads = [Thread(thread, board) for thread in threads]
+        threads = tuple(Thread(thread, board) for thread in threads)
 
         if keywords:
-            keywords = [keyword.lower() for keyword in keywords]
+            keywords = tuple(keyword.lower() for keyword in keywords)
             threads = [thread for thread in threads if any(k in thread.comment.lower() for k in keywords)]
 
         if return_status:
@@ -65,9 +62,9 @@ class Api:
     async def get_top_board_threads(self,
                                     board: str,
                                     method: str,
-                                    num: int = 5,
+                                    num: Optional[int] = 5,
                                     return_status: Optional[bool] = False
-                                    ) -> Union[Tuple[int, List[Thread]], List[Thread]]:
+                                    ) -> Union[Tuple[int, Tuple[Thread]], Tuple[Thread]]:
         if method not in SORTING_METHODS:
             raise WrongSortMethodException(f'Cannot sort threads using {method} method')
 
@@ -76,7 +73,7 @@ class Api:
 
         result = await self.get_board_threads(board, return_status=return_status)
 
-        if isinstance(result, tuple):
+        if return_status:
             status, board_threads = result
         else:
             board_threads = result
@@ -88,26 +85,28 @@ class Api:
         elif method == 'posts':
             board_threads = sorted(board_threads, key=lambda t: (t.posts_count, t.views), reverse=True)
 
+        board_threads = tuple(board_threads[:num])
+
         if return_status:
-            return status, board_threads[:num]
-        return board_threads[:num]
+            return status, board_threads
+        return board_threads
 
     async def get_thread_posts(self,
                                thread: Union[int, str, Thread],
                                board: Optional[Union[str, Board]] = None,
                                return_status: Optional[bool] = False
-                               ) -> Union[Tuple[int, List[Post]], List[Post]]:
+                               ) -> Union[Tuple[int, Tuple[Post]], Tuple[Post]]:
         if isinstance(thread, Thread):
             board = thread.board
             thread = thread.num
-        if isinstance(board, Board):
-            board = board.name
+        elif isinstance(board, Board):
+            board = board.id
         elif not board:
             raise NoBoardProvidedException('Board id is not provided')
 
         status, posts = await self._get(url=f'{self.api_url}/{board}/res/{thread}.json')
         posts = posts['threads'][0]['posts']
-        posts = [Post(post) for post in posts]
+        posts = tuple(Post(post) for post in posts)
 
         if return_status:
             return status, posts
@@ -117,22 +116,22 @@ class Api:
                                thread: Union[int, str, Thread],
                                board: Optional[Union[str, Board]] = None,
                                return_status: Optional[bool] = False
-                               ) -> Union[Tuple[int, List[File]], List[File]]:
+                               ) -> Union[Tuple[int, Tuple[File]], Tuple[File]]:
         result = await self.get_thread_posts(thread, board=board, return_status=return_status)
 
-        if isinstance(result, tuple):
+        if return_status:
             status, posts = result
         else:
             posts = result
 
-        files = sum((post.files for post in posts if post.files), [])
+        files = sum((post.files for post in posts if post.files), ())
 
         if return_status:
             return status, files
         return files
 
     async def download_thread_media(self,
-                                    files: List[File],
+                                    files: Iterable[File],
                                     save_to: str,
                                     bound: Optional[int] = 10) -> None:
         async def download(client, semaphore, file):

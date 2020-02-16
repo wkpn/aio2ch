@@ -1,15 +1,8 @@
 from aio2ch.exceptions import NoBoardProvidedException, WrongSortMethodException
 from aio2ch.objects import Board, File, Post, Thread
-from aio2ch import Api
+
 
 import pytest
-
-
-@pytest.fixture
-async def client():
-    api_client = Api()
-    yield api_client
-    await api_client.close()
 
 
 @pytest.mark.asyncio
@@ -42,7 +35,7 @@ async def test_get_boards_with_status(client):
 
 
 @pytest.mark.asyncio
-async def test_get_board_threads(client):
+async def test_get_board_threads_str(client):
     threads = await client.get_board_threads(board='test')
 
     assert len(threads) > 0
@@ -50,7 +43,15 @@ async def test_get_board_threads(client):
 
 
 @pytest.mark.asyncio
-async def test_get_board_threads_with_status(client):
+async def test_get_board_threads_instance(client, board):
+    threads = await client.get_board_threads(board=board)
+
+    assert len(threads) > 0
+    assert all(isinstance(thread, Thread) for thread in threads)
+
+
+@pytest.mark.asyncio
+async def test_get_board_threads_str_with_status(client):
     status, threads = await client.get_board_threads(board='test', return_status=True)
 
     assert status >= 200
@@ -59,95 +60,95 @@ async def test_get_board_threads_with_status(client):
 
 
 @pytest.mark.asyncio
-async def test_get_top_board_threads(client):
-    threads = await client.get_top_board_threads(board='test', method='views')
-
-    assert len(threads) == 5
-    assert all(isinstance(thread, Thread) for thread in threads)
-
-
-@pytest.mark.asyncio
-async def test_get_top_board_threads_with_status(client):
-    status, threads = await client.get_top_board_threads(board='test', method='views', return_status=True)
+async def test_get_board_threads_instance_with_status(client, board):
+    status, threads = await client.get_board_threads(board=board, return_status=True)
 
     assert status >= 200
-    assert len(threads) == 5
+    assert len(threads) > 0
     assert all(isinstance(thread, Thread) for thread in threads)
 
 
 @pytest.mark.asyncio
-async def test_get_top_board_threads_wrong_sort_method(client):
+async def test_get_top_board_threads_str(client, number_of_threads):
+    threads = await client.get_top_board_threads(board='test', method='views', num=number_of_threads)
+
+    assert len(threads) == number_of_threads
+    assert all(isinstance(thread, Thread) for thread in threads)
+
+
+@pytest.mark.asyncio
+async def test_get_top_board_threads_instance(client, board, number_of_threads):
+    threads = await client.get_top_board_threads(board=board, method='views', num=number_of_threads)
+
+    assert len(threads) == number_of_threads
+    assert all(isinstance(thread, Thread) for thread in threads)
+
+
+@pytest.mark.asyncio
+async def test_get_top_board_threads_str_with_status(client, number_of_threads):
+    status, threads = await client.get_top_board_threads(board='test', method='views', num=number_of_threads,
+                                                         return_status=True)
+
+    assert status >= 200
+    assert len(threads) == number_of_threads
+    assert all(isinstance(thread, Thread) for thread in threads)
+
+
+@pytest.mark.asyncio
+async def test_get_top_board_threads_instance_with_status(client, board, number_of_threads):
+    status, threads = await client.get_top_board_threads(board=board, method='views', num=number_of_threads,
+                                                         return_status=True)
+
+    assert status >= 200
+    assert len(threads) == number_of_threads
+    assert all(isinstance(thread, Thread) for thread in threads)
+
+
+@pytest.mark.asyncio
+async def test_get_top_board_threads_str_wrong_sort_method(client):
     with pytest.raises(WrongSortMethodException):
         await client.get_top_board_threads(board='test', method='WrongSortMethod')
 
 
 @pytest.mark.asyncio
-async def test_get_thread_posts(client):
-    threads = await client.get_board_threads(board='test')
-    thread = threads[0]
-
-    posts = await client.get_thread_posts(thread)
-
-    assert(all(isinstance(post, Post) for post in posts))
+async def test_get_top_board_threads_instance_wrong_sort_method(client, board):
+    with pytest.raises(WrongSortMethodException):
+        await client.get_top_board_threads(board=board, method='WrongSortMethod')
 
 
 @pytest.mark.asyncio
-async def test_get_thread_posts_with_status(client):
-    _, threads = await client.get_board_threads(board='test', return_status=True)
-    thread = threads[0]
+async def test_get_thread_posts(client, thread):
+    posts = await client.get_thread_posts(thread)
 
+    assert all(isinstance(post, Post) for post in posts)
+
+
+@pytest.mark.asyncio
+async def test_get_thread_posts_with_status(client, thread):
     status, posts = await client.get_thread_posts(thread, return_status=True)
 
     assert status >= 200
-    assert(all(isinstance(post, Post) for post in posts))
+    assert all(isinstance(post, Post) for post in posts)
 
 
 @pytest.mark.asyncio
-async def test_get_thread_posts_no_board_provided(client):
+async def test_get_thread_posts_no_board_provided(client, thread):
     with pytest.raises(NoBoardProvidedException):
-        await client.get_thread_posts(30972)
+        await client.get_thread_posts(thread.num)
 
 
 @pytest.mark.asyncio
-async def test_get_thread_media(client):
-    test_thread_data = {
-        'comment': '',
-        'num': 30972,
-        'posts_count': '',
-        'score': '',
-        'subject': '',
-        'timestamp': '',
-        'views': ''
-    }
-
-    test_board = 'test'
-
-    test_thread = Thread(test_thread_data, test_board)
-
-    thread_media = await client.get_thread_media(test_thread)
+async def test_get_thread_media(client, thread):
+    thread_media = await client.get_thread_media(thread)
 
     assert len(thread_media) > 0
-    assert(all(isinstance(file, File) for file in thread_media))
+    assert all(isinstance(file, File) for file in thread_media)
 
 
 @pytest.mark.asyncio
-async def test_get_thread_media_with_status(client):
-    test_thread_data = {
-        'comment': '',
-        'num': 30972,
-        'posts_count': '',
-        'score': '',
-        'subject': '',
-        'timestamp': '',
-        'views': ''
-    }
-
-    test_board = 'test'
-
-    test_thread = Thread(test_thread_data, test_board)
-
-    status, thread_media = await client.get_thread_media(test_thread, return_status=True)
+async def test_get_thread_media_with_status(client, thread):
+    status, thread_media = await client.get_thread_media(thread, return_status=True)
 
     assert status >= 200
     assert len(thread_media) > 0
-    assert (all(isinstance(file, File) for file in thread_media))
+    assert all(isinstance(file, File) for file in thread_media)

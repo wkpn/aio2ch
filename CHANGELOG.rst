@@ -1,6 +1,15 @@
 Changelog
 =========
 
+`2.0.1`
+-------
+
+* reduced memory usage by using tuples instead of lists
+* improved test coverage
+* changed some api endpoints
+* more typing annotations
+* code cleanup
+
 `2.0`
 -----
 

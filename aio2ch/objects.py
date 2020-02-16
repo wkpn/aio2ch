@@ -1,16 +1,15 @@
 class Board:
     __slots__ = ('bump_limit', 'category', 'default_name',
-                 'icons', 'id', 'name', 'pages', 'sage')
+                 'id', 'info', 'name', 'threads')
 
     def __init__(self, board):
         self.bump_limit = board['bump_limit']
         self.category = board['category']
         self.default_name = board['default_name']
-        self.icons = board['icons']
         self.id = board['id']
+        self.info = board['info']
         self.name = board['name']
-        self.pages = board['pages']
-        self.sage = board['sage']
+        self.threads = board['threads']
 
     def __repr__(self):
         return f'<Board name: {self.name}, id: {self.id}>'
@@ -20,8 +19,8 @@ class Thread:
     __slots__ = ('board', 'comment', 'num', 'posts_count',
                  'score', 'subject', 'timestamp', 'views')
 
-    def __init__(self, thread, board):
-        self.board = board
+    def __init__(self, thread, board=None):
+        self.board = board.id if isinstance(board, Board) else board
         self.comment = thread['comment']
         self.num = thread['num']
         self.posts_count = thread['posts_count']
@@ -44,7 +43,7 @@ class Post:
         self.closed = post['closed']
         self.comment = post['comment']
         self.endless = post['endless']
-        self.files = [File(file) for file in post['files']]
+        self.files = tuple(File(file) for file in post['files'])
         self.name = post['name']
         self.num = post['num']
         self.number = post['number']
