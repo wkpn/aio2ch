@@ -11,7 +11,8 @@ Fully asynchronous read-only API wrapper for 2ch.hk (dvach, Двач)
 Requirements
 ------------
 
--  Python 3.5+
+-  httpx_
+-  aiofiles_
 
 Install with pip
 ----------------
@@ -30,25 +31,37 @@ Build from source
 
 Usage
 -----
+
+Simple usage (in this case ``client.close()`` must be called when client is no longer needed)
+
 .. code-block:: python
 
     >>> from aio2ch import Api
-    >>> api = Api()
+    >>> client = Api()
+    ...
+    >>> await client.close()
+
+Or you can use it as a context manager
+
+.. code-block:: python
+
+    >>> async with Api() as client:
+    ...     await client.get_boards()
 
 Get all boards
 
 .. code-block:: python
 
-    >>> boards = await api.get_boards()
+    >>> boards = await client.get_boards()
 
     >>> boards
     [<Board name: Фагготрия, id: fag>, ... ]
 
-In addition we can get `status` for each method. This is useful for debug purposes or if retries are needed
+In addition we can get ``status`` for each method. This is useful for debug purposes or if retries are needed
 
 .. code-block:: python
 
-    >>> status, boards = await api.get_boards(return_status=True)
+    >>> status, boards = await client.get_boards(return_status=True)
 
     >>> status
     200
@@ -60,7 +73,7 @@ Get all threads from a board
 
 .. code-block:: python
 
-    >>> threads = await api.get_board_threads(board='b')
+    >>> threads = await client.get_board_threads(board='b')
 
     >>> threads
     [<Thread 180981319>, ... ]
@@ -69,16 +82,16 @@ Get top threads from a board sorted by method (*views*, *score* or *posts_count*
 
 .. code-block:: python
 
-    >>> top_threads = await api.get_top_board_threads(board='b', method='views', num=3)
+    >>> top_threads = await client.get_top_board_threads(board='b', method='views', num=3)
 
     >>> top_threads
     [<Thread 180894312>, <Thread 180946622>, <Thread 180963318>]
 
-Get all thread's posts (`thread` is an instance of `Thread`)
+Get all thread's posts (``thread`` is an instance of ``Thread``)
 
 .. code-block:: python
 
-    >>> thread_posts = await api.get_thread_posts(thread=thread)
+    >>> thread_posts = await client.get_thread_posts(thread=thread)
 
     >>> thread_posts
     [<Post 180894312>, ... ]
@@ -87,16 +100,16 @@ Get all media in all thread's posts (images, webm and so on)
 
 .. code-block:: python
 
-    >>> thread_media = await api.get_thread_media(thread=thread)
+    >>> thread_media = await client.get_thread_media(thread=thread)
 
     >>> thread_media
-    [<File name:15336559148500.jpg, path:/b/src/180979032/15336559148500.jpg, size:19>, ... ]
+    [<File name: 15336559148500.jpg, path: /b/src/180979032/15336559148500.jpg, size: 19>, ... ]
 
 Download all thread media
 
 .. code-block:: python
 
-    >>> await api.download_thread_media(files=thread_media, save_to='./downloads/')
+    >>> await client.download_thread_media(files=thread_media, save_to='./downloads')
 
 .. |License| image:: https://img.shields.io/pypi/l/aio2ch.svg
     :target: https://pypi.python.org/pypi/aio2ch
@@ -106,3 +119,5 @@ Download all thread media
     :target: https://pypi.python.org/pypi/aio2ch
 .. |Python| image:: https://img.shields.io/pypi/pyversions/aio2ch.svg
     :target: https://pypi.python.org/pypi/aio2ch
+.. _httpx: https://github.com/encode/httpx
+.. _aiofiles: https://github.com/Tinche/aiofiles

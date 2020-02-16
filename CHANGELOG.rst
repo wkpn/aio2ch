@@ -1,6 +1,15 @@
 Changelog
 =========
 
+`2.0`
+-----
+
+* Api client now can be used as a context manager
+* f-strings are now everywhere
+* Replace ``aiohttp`` in favor of ``httpx``
+* Typing annotations
+* ``download_thread_media`` is now using streaming approach
+
 `1.4.3.1`
 ---------
 
