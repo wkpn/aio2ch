@@ -1,5 +1,4 @@
-aio2ch
-======
+|Logo|
 
 |License|
 |Downloads|
@@ -119,5 +118,7 @@ Download all thread media
     :target: https://pypi.python.org/pypi/aio2ch
 .. |Python| image:: https://img.shields.io/pypi/pyversions/aio2ch.svg
     :target: https://pypi.python.org/pypi/aio2ch
+.. |Logo| image:: https://raw.githubusercontent.com/wkpn/aio2ch/master/img/banner.png
+
 .. _httpx: https://github.com/encode/httpx
 .. _aiofiles: https://github.com/Tinche/aiofiles

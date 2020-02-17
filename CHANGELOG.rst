@@ -1,6 +1,13 @@
 Changelog
 =========
 
+`2.0.2`
+-------
+
+* added docstrings
+* added project logo (might change in the future)
+* moved ``api_client`` into separate module
+
 `2.0.1`
 -------
 

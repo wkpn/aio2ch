@@ -1,7 +1,7 @@
 # folders
-.pytest_cache
-res
-scripts
+.pytest_cache/
+res/
+scripts/
 
 # files
 update_pip_package.sh

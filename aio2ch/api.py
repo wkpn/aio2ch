@@ -2,36 +2,32 @@ __all__ = 'Api'
 
 from .exceptions import NoBoardProvidedException, WrongSortMethodException
 from .objects import Board, File, Post, Thread
-from .settings import API_URL, SORTING_METHODS
+from .settings import SORTING_METHODS
+from .api_client import ApiClient
 
 from typing import Any, Dict, Iterable, Optional, Tuple, Type, Union
 from types import TracebackType
-
-from httpx import AsyncClient
 
 import aiofiles
 import asyncio
 
 
 class Api:
-    __slots__ = ('_api_url', '__client')
+    __slots__ = '_api_client'
 
     def __init__(self, api_url: Optional[str] = None):
-        self._api_url: str = API_URL if not api_url else api_url
-        self.__client: AsyncClient = AsyncClient()
-
-    @property
-    def api_url(self) -> str:
-        return self._api_url
-
-    @api_url.setter
-    def api_url(self, api_url: str) -> None:
-        self._api_url = api_url
+        self._api_client: ApiClient = ApiClient(api_url=api_url)
 
     async def get_boards(self,
                          return_status: Optional[bool] = False
                          ) -> Union[Tuple[int, Tuple[Board]], Tuple[Board]]:
-        status, boards = await self._get(url=f'{self.api_url}/boards.json')
+        """
+        get boards
+        :param return_status:   whether to return status code or not
+        :return:                status code (optional) and tuple of Boards
+        """
+
+        status, boards = await self._get(url=f'{self._api_client.api_url}/boards.json')
         boards = boards['boards']
         boards = tuple(Board(board) for board in boards)
 
@@ -44,10 +40,18 @@ class Api:
                                 keywords: Optional[Iterable[str]] = None,
                                 return_status: Optional[bool] = False
                                 ) -> Union[Tuple[int, Tuple[Thread]], Tuple[Thread]]:
+        """
+        get board threads
+        :param board:           board to search threads in
+        :param keywords:        specific keywords that should be in thread
+        :param return_status:   whether to return status code or not
+        :return:                status code (optional) and/or tuple of Threads
+        """
+
         if isinstance(board, Board):
             board = board.id
 
-        status, threads = await self._get(url=f'{self.api_url}/{board}/threads.json')
+        status, threads = await self._get(url=f'{self._api_client.api_url}/{board}/threads.json')
         threads = threads['threads']
         threads = tuple(Thread(thread, board) for thread in threads)
 
@@ -60,11 +64,20 @@ class Api:
         return threads
 
     async def get_top_board_threads(self,
-                                    board: str,
+                                    board: Union[str, Board],
                                     method: str,
                                     num: Optional[int] = 5,
                                     return_status: Optional[bool] = False
                                     ) -> Union[Tuple[int, Tuple[Thread]], Tuple[Thread]]:
+        """
+        get top board threads
+        :param board:           board to search threads in
+        :param method:          sort method ('views', 'score', or 'posts_count')
+        :param num:             how many threads to return
+        :param return_status:   whether to return status code or not
+        :return:                status code (optional) and/or tuple of Threads
+        """
+
         if method not in SORTING_METHODS:
             raise WrongSortMethodException(f'Cannot sort threads using {method} method')
 
@@ -96,6 +109,14 @@ class Api:
                                board: Optional[Union[str, Board]] = None,
                                return_status: Optional[bool] = False
                                ) -> Union[Tuple[int, Tuple[Post]], Tuple[Post]]:
+        """
+        get thread posts
+        :param thread:          thread to get posts from
+        :param board:           optional, needed if thread passes as int or str
+        :param return_status:   whether to return status code or not
+        :return:                status code (optional) and/or tuple of Posts
+        """
+
         if isinstance(thread, Thread):
             board = thread.board
             thread = thread.num
@@ -104,7 +125,7 @@ class Api:
         elif not board:
             raise NoBoardProvidedException('Board id is not provided')
 
-        status, posts = await self._get(url=f'{self.api_url}/{board}/res/{thread}.json')
+        status, posts = await self._get(url=f'{self._api_client.api_url}/{board}/res/{thread}.json')
         posts = posts['threads'][0]['posts']
         posts = tuple(Post(post) for post in posts)
 
@@ -117,6 +138,14 @@ class Api:
                                board: Optional[Union[str, Board]] = None,
                                return_status: Optional[bool] = False
                                ) -> Union[Tuple[int, Tuple[File]], Tuple[File]]:
+        """
+        get thread media (webms, mp4, pictures etc.)
+        :param thread:          thread to get media from
+        :param board:           optional, needed if thread passes as int or str
+        :param return_status:   whether to return status code or not
+        :return:                status code (optional) and/or tuple of Files
+        """
+
         result = await self.get_thread_posts(thread, board=board, return_status=return_status)
 
         if return_status:
@@ -134,27 +163,34 @@ class Api:
                                     files: Iterable[File],
                                     save_to: str,
                                     bound: Optional[int] = 10) -> None:
-        async def download(client, semaphore, file):
+        """
+        download thread media to a folder on a disk
+        :param files:           iterable with Files (e.g. can be list or tuple with Files)
+        :param save_to:         folder on a disk
+        :param bound:           concurrent connections limit
+        """
+
+        async def download(api_client, semaphore, file):
             async with semaphore:
                 filename = f'{save_to}/{file.name}'
-                url = f'{self.api_url}{file.path}'
+                url = f'{api_client.api_url}{file.path}'
 
                 async with aiofiles.open(filename, 'wb') as download_file:
-                    async with client.stream('GET', url) as stream:
+                    async with api_client.client.stream('GET', url) as stream:
                         async for chunk in stream.aiter_bytes():
                             await download_file.write(chunk)
 
         semaphore = asyncio.Semaphore(bound)
-        download_tasks = (download(self.__client, semaphore, file) for file in files)
+        download_tasks = (download(self._api_client, semaphore, file) for file in files)
 
         await asyncio.gather(*download_tasks)
 
     async def _get(self, url, **kwargs: Any) -> Tuple[int, Dict]:
-        response = await self.__client.get(url, **kwargs)
-        return response.status_code, response.json()
+        status_code, json_data = await self._api_client.request(method='GET', url=url, **kwargs)
+        return status_code, json_data
 
     async def close(self) -> None:
-        await self.__client.aclose()
+        await self._api_client.close()
 
     async def __aenter__(self) -> 'Api':
         return self
