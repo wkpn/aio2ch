@@ -37,7 +37,7 @@ Simple usage (in this case ``client.close()`` must be called when client is no l
 
     >>> from aio2ch import Api
     >>> client = Api()
-    ...
+    >>> ...
     >>> await client.close()
 
 Or you can use it as a context manager
@@ -45,7 +45,7 @@ Or you can use it as a context manager
 .. code-block:: python
 
     >>> async with Api() as client:
-    ...     await client.get_boards()
+    ...     boards = await client.get_boards()
 
 Get all boards
 

@@ -15,8 +15,14 @@ import asyncio
 class Api:
     __slots__ = '_api_client'
 
-    def __init__(self, api_url: Optional[str] = None):
-        self._api_client: ApiClient = ApiClient(api_url=api_url)
+    def __init__(self, api_url: Optional[str] = None, **kwargs: Any):
+        """
+        main API class
+        :param api_url:   main API endpoint. can be any of these: 2ch.hk, 2ch.pm (rest are redirects to 2ch.hk)
+        :param kwargs:    any additional args you want to pass to the client e.g. proxies or headers
+        """
+
+        self._api_client: ApiClient = ApiClient(api_url=api_url, **kwargs)
 
     async def get_boards(self,
                          return_status: Optional[bool] = False
@@ -57,7 +63,7 @@ class Api:
 
         if keywords:
             keywords = tuple(keyword.lower() for keyword in keywords)
-            threads = [thread for thread in threads if any(k in thread.comment.lower() for k in keywords)]
+            threads = tuple(thread for thread in threads if any(k in thread.comment.lower() for k in keywords))
 
         if return_status:
             return status, threads
@@ -185,8 +191,8 @@ class Api:
 
         await asyncio.gather(*download_tasks)
 
-    async def _get(self, url, **kwargs: Any) -> Tuple[int, Dict]:
-        status_code, json_data = await self._api_client.request(method='GET', url=url, **kwargs)
+    async def _get(self, url) -> Tuple[int, Dict]:
+        status_code, json_data = await self._api_client.request(method='GET', url=url)
         return status_code, json_data
 
     async def close(self) -> None:

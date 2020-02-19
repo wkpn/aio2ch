@@ -20,15 +20,19 @@ setup(
         'httpx==0.11.1',
         'aiofiles'
     ],
-    tests_require=['pytest', 'pytest-asyncio', 'pytest-cov'],
+    tests_require=[
+        'pytest',
+        'pytest-asyncio',
+        'pytest-cov'
+    ],
     keywords=['2ch', 'Двач', 'Dvach', 'api', 'wrapper', 'async'],
     zip_safe=False,
     classifiers=[
-            'Development Status :: 5 - Production/Stable',
-            'Framework :: AsyncIO',
-            'Intended Audience :: Developers',
-            'License :: OSI Approved :: MIT License',
-            'Programming Language :: Python :: 3.6',
-            'Programming Language :: Python :: 3.7'
+        'Development Status :: 5 - Production/Stable',
+        'Framework :: AsyncIO',
+        'Intended Audience :: Developers',
+        'License :: OSI Approved :: MIT License',
+        'Programming Language :: Python :: 3.6',
+        'Programming Language :: Python :: 3.7'
     ]
 )
