@@ -242,3 +242,6 @@ class Api:
                         exc_val: Optional[BaseException],
                         exc_tb: Optional[TracebackType]) -> None:
         await self.close()
+
+    def __repr__(self) -> str:
+        return f'<Api api_url={self._api_client.api_url}>'

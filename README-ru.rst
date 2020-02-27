@@ -54,7 +54,7 @@
     >>> boards = await client.get_boards()
 
     >>> boards
-    [<Board name: Фагготрия, id: fag>, ... ]
+    [<Board name="Фагготрия", id="fag">, ... ]
 
 Также дополнительно можно получить ``status`` для каждого метода. Полезно, если нужны ретраи
 
@@ -66,7 +66,7 @@
     200
 
     >>> boards
-    [<Board name: Фагготрия, id: fag>, ... ]
+    [<Board name="Фагготрия", id="fag">, ... ]
 
 Получить все треды с доски
 
@@ -75,7 +75,7 @@
     >>> threads = await client.get_board_threads(board='b')
 
     >>> threads
-    [<Thread 180981319>, ... ]
+    [<Thread num="180981319">, ... ]
 
 Получить топ тредов с доски с заданной сортировкой (*views*, *score* or *posts_count*)
 
@@ -84,7 +84,7 @@
     >>> top_threads = await client.get_top_board_threads(board='b', method='views', num=3)
 
     >>> top_threads
-    [<Thread 180894312>, <Thread 180946622>, <Thread 180963318>]
+    [<Thread num="180894312">, <Thread num="180946622">, <Thread num="180963318">]
 
 Получить все посты с треда (``thread`` инстанс ``Thread``)
 
@@ -93,7 +93,7 @@
     >>> thread_posts = await client.get_thread_posts(thread=thread)
 
     >>> thread_posts
-    [<Post 180894312>, ... ]
+    [<Post num="180894312">, ... ]
 
 Получить все посты с треда по его адресу
 
@@ -102,7 +102,7 @@
     >>> thread_posts = await client.get_thread_posts(thread='https://2ch.hk/test/res/30972.html')
 
     >>> thread_posts
-    [<Post 30972>, ... ]
+    [<Post num="30972">, ... ]
 
 Получить все медиа с треда (пикчи, webm-ки и прочее)
 
@@ -111,7 +111,7 @@
     >>> thread_media = await client.get_thread_media(thread=thread)
 
     >>> thread_media
-    [<File name: 15336559148500.jpg, path: /b/src/180979032/15336559148500.jpg, size: 19>, ... ]
+    [<File name="15336559148500.jpg", path="/b/src/180979032/15336559148500.jpg", size="19">, ... ]
 
 Скачать все медиа с треда на диск в папку
 

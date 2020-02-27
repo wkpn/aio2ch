@@ -12,7 +12,7 @@ class Board:
         self.threads = board['threads']
 
     def __repr__(self):
-        return f'<Board name: {self.name}, id: {self.id}>'
+        return f'<Board name="{self.name}", id="{self.id}">'
 
 
 class Thread:
@@ -30,7 +30,7 @@ class Thread:
         self.views = thread['views']
 
     def __repr__(self):
-        return f'<Thread {self.num}>'
+        return f'<Thread num="{self.num}">'
 
 
 class Post:
@@ -53,7 +53,7 @@ class Post:
         self.timestamp = post['timestamp']
 
     def __repr__(self):
-        return f'<Post {self.num}>'
+        return f'<Post num="{self.num}">'
 
 
 class File:
@@ -66,4 +66,4 @@ class File:
         self.size = file['size']
 
     def __repr__(self):
-        return f'<File name: {self.name}, path: {self.path}, size: {self.size}>'
+        return f'<File name="{self.name}", path="{self.path}", size="{self.size}">'

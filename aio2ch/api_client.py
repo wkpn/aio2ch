@@ -1,10 +1,17 @@
-from typing import Any, Dict, Optional, Tuple
 from httpx import AsyncClient
+from typing import (
+    Any,
+    Dict,
+    Optional,
+    Tuple
+)
 
 from .helpers import API_URL
 
 
 class ApiClient:
+    __slots__ = '_api_url', 'client'
+
     def __init__(self, api_url: Optional[str], **kwargs: Any):
         self._api_url: str = API_URL if not api_url else api_url
         self.client: AsyncClient = AsyncClient(**kwargs)
@@ -30,3 +37,7 @@ class ApiClient:
 
     async def close(self) -> None:
         await self.client.aclose()
+
+    def __repr__(self) -> str:
+        return f'<ApiClient api_url={self._api_url}>'
+
