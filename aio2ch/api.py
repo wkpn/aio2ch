@@ -12,8 +12,11 @@ from .objects import (
     Post,
     Thread
 )
-from .helpers import BOARDS_LIST, get_board_and_thread_from_url
-from .settings import SORTING_METHODS
+from .helpers import (
+    BOARDS_LIST,
+    SORTING_METHODS,
+    get_board_and_thread_from_url
+)
 from .api_client import ApiClient
 
 from typing import (

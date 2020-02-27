@@ -3,6 +3,8 @@ from typing import Tuple, Union
 import re
 
 
+API_URL = 'https://2ch.hk'
+
 BOARDS_LIST: Tuple = (
     'b', 'vg', 'po', 'fag', 'news', '2d', 'v', 'hw', 'sex', 'a', 'au', 'biz', 'wm', 'soc', 'wrk', 'rf', 'pr',
     'brg', 'me', 'mobi', 'kpop', 'c', 'w', 'hi', 'mov', 'fiz', 'ftb', 'sp', 'cg', 'ma', 'hry', 'dr', 'tes',
@@ -15,6 +17,8 @@ BOARDS_LIST: Tuple = (
     'm', 'ya', 'r34', '8', 'mlpr', 'ro', 'who', 'srv', 'electrach', 'ing', 'got', 'crypt', 'lap', 'smo', 'hg',
     'sad', 'fi', 'nvr', 'ind', 'ld', 'fem', 'vr', 'arg', 'char', 'hv', 'math', 'catalog', 'api', 'test'
 )
+
+SORTING_METHODS = ('views', 'score', 'posts_count')
 
 
 def get_board_and_thread_from_url(thread_url: str) -> Union[Tuple[str, str], Tuple[None, None]]:

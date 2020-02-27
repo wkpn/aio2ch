@@ -1,7 +1,7 @@
 from typing import Any, Dict, Optional, Tuple
 from httpx import AsyncClient
 
-from .settings import API_URL
+from .helpers import API_URL
 
 
 class ApiClient:
