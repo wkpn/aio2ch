@@ -1,11 +1,30 @@
 __all__ = 'Api'
 
-from .exceptions import NoBoardProvidedException, WrongSortMethodException
-from .objects import Board, File, Post, Thread
+from .exceptions import (
+    InvalidBoardIdException,
+    InvalidThreadUrlException,
+    NoBoardProvidedException,
+    WrongSortMethodException
+)
+from .objects import (
+    Board,
+    File,
+    Post,
+    Thread
+)
+from .helpers import BOARDS_LIST, get_board_and_thread_from_url
 from .settings import SORTING_METHODS
 from .api_client import ApiClient
 
-from typing import Any, Dict, Iterable, Optional, Tuple, Type, Union
+from typing import (
+    Any,
+    Dict,
+    Iterable,
+    Optional,
+    Tuple,
+    Type,
+    Union
+)
 from types import TracebackType
 
 import aiofiles
@@ -57,6 +76,9 @@ class Api:
         if isinstance(board, Board):
             board = board.id
 
+        if board not in BOARDS_LIST:
+            raise InvalidBoardIdException(f'Board {board} doesn\'t exist')
+
         status, threads = await self._get(url=f'{self._api_client.api_url}/{board}/threads.json')
         threads = threads['threads']
         threads = tuple(Thread(thread, board) for thread in threads)
@@ -89,6 +111,9 @@ class Api:
 
         if isinstance(board, Board):
             board = board.id
+
+        if board not in BOARDS_LIST:
+            raise InvalidBoardIdException(f'Board {board} doesn\'t exist')
 
         result = await self.get_board_threads(board, return_status=return_status)
 
@@ -126,10 +151,18 @@ class Api:
         if isinstance(thread, Thread):
             board = thread.board
             thread = thread.num
+        elif isinstance(thread, str):
+            board, thread = get_board_and_thread_from_url(thread)
+
+            if not all((board, thread)):
+                raise InvalidThreadUrlException(f'Invalid thread url {thread}')
         elif isinstance(board, Board):
             board = board.id
         elif not board:
             raise NoBoardProvidedException('Board id is not provided')
+
+        if board not in BOARDS_LIST:
+            raise InvalidBoardIdException(f'Board {board} doesn\'t exist')
 
         status, posts = await self._get(url=f'{self._api_client.api_url}/{board}/res/{thread}.json')
         posts = posts['threads'][0]['posts']

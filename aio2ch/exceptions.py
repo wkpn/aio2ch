@@ -4,3 +4,11 @@ class WrongSortMethodException(Exception):
 
 class NoBoardProvidedException(Exception):
     pass
+
+
+class InvalidThreadUrlException(Exception):
+    pass
+
+
+class InvalidBoardIdException(Exception):
+    pass

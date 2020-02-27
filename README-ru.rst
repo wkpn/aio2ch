@@ -5,33 +5,33 @@
 |PyPi|
 |Python|
 
-Fully asynchronous read-only API wrapper for 2ch.hk (dvach, Двач)
+Полностью асинхронный read-only API wrapper для 2ch.hk (dvach, Двач)
 
-Requirements
-------------
+Требования
+----------
 
 -  httpx_
 -  aiofiles_
 
-Install with pip
-----------------
+Установка через pip
+-------------------
 .. code-block:: bash
 
     $ pip3 install aio2ch
 
 
-Build from source
------------------
+Сборка из исходников
+--------------------
 .. code-block:: bash
 
     $ git clone https://github.com/wkpn/aio2ch
     $ cd ./aio2ch
     $ python3 setup.py install
 
-Usage
------
+Использование
+-------------
 
-Simple usage (in this case ``client.close()`` must be called when client is no longer needed)
+Простой пример (тогда надо вызвать ``client.close()`` в конце использования)
 
 .. code-block:: python
 
@@ -40,14 +40,14 @@ Simple usage (in this case ``client.close()`` must be called when client is no l
     >>> ...
     >>> await client.close()
 
-Or you can use it as a context manager
+Или можно использовать как менеджер контекста
 
 .. code-block:: python
 
     >>> async with Api() as client:
     ...     boards = await client.get_boards()
 
-Get all boards
+Получить все доски
 
 .. code-block:: python
 
@@ -56,7 +56,7 @@ Get all boards
     >>> boards
     [<Board name: Фагготрия, id: fag>, ... ]
 
-In addition we can get ``status`` for each method. This is useful for debug purposes or if retries are needed
+Также дополнительно можно получить ``status`` для каждого метода. Полезно, если нужны ретраи
 
 .. code-block:: python
 
@@ -68,7 +68,7 @@ In addition we can get ``status`` for each method. This is useful for debug purp
     >>> boards
     [<Board name: Фагготрия, id: fag>, ... ]
 
-Get all threads from a board
+Получить все треды с доски
 
 .. code-block:: python
 
@@ -77,7 +77,7 @@ Get all threads from a board
     >>> threads
     [<Thread 180981319>, ... ]
 
-Get top threads from a board sorted by method (*views*, *score* or *posts_count*)
+Получить топ тредов с доски с заданной сортировкой (*views*, *score* or *posts_count*)
 
 .. code-block:: python
 
@@ -86,7 +86,7 @@ Get top threads from a board sorted by method (*views*, *score* or *posts_count*
     >>> top_threads
     [<Thread 180894312>, <Thread 180946622>, <Thread 180963318>]
 
-Get all thread's posts (``thread`` is an instance of ``Thread``)
+Получить все посты с треда (``thread`` инстанс ``Thread``)
 
 .. code-block:: python
 
@@ -95,7 +95,7 @@ Get all thread's posts (``thread`` is an instance of ``Thread``)
     >>> thread_posts
     [<Post 180894312>, ... ]
 
-Get all thread's posts  by url
+Получить все посты с треда по его адресу
 
 .. code-block:: python
 
@@ -104,7 +104,7 @@ Get all thread's posts  by url
     >>> thread_posts
     [<Post 30972>, ... ]
 
-Get all media in all thread's posts (images, webm and so on)
+Получить все медиа с треда (пикчи, webm-ки и прочее)
 
 .. code-block:: python
 
@@ -113,7 +113,7 @@ Get all media in all thread's posts (images, webm and so on)
     >>> thread_media
     [<File name: 15336559148500.jpg, path: /b/src/180979032/15336559148500.jpg, size: 19>, ... ]
 
-Download all thread media
+Скачать все медиа с треда на диск в папку
 
 .. code-block:: python
 

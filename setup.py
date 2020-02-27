@@ -1,5 +1,6 @@
-from setuptools import setup
 from aio2ch import __author__, __version__, __license__, __url__
+
+from setuptools import setup
 
 
 with open('README.rst', 'r', encoding='utf-8') as f:

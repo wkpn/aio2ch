@@ -43,5 +43,15 @@ def thread():
 
 
 @pytest.fixture
+def thread_url():
+    return 'https://2ch.hk/test/res/30972.html'
+
+
+@pytest.fixture
+def invalid_thread_url():
+    return 'https://dvach.hk/blah/blah/blah.css'
+
+
+@pytest.fixture
 def number_of_threads(number=5):
     return number

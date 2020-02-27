@@ -1,6 +1,21 @@
 Changelog
 =========
 
+`2.0.3`
+-------
+
+* ``get_thread_posts`` and ``get_thread_media`` now accepts thread passed as url
+
+.. code-block:: python
+
+    >>> thread_media = await client.get_thread_media('https://2ch.hk/test/res/30972.html')
+
+* added boards lists and according checks
+* added new exceptions
+* more tests
+* more code cleanup
+* added changelog_ and readme_ translations in Russian
+
 `2.0.2`
 -------
 
@@ -38,3 +53,6 @@ Changelog
 
 * Added ``keywords`` parameter to ``get_board_threads`` method
 * Added ``download_thread_media`` method
+
+.. _changelog: https://github.com/wkpn/aio2ch/CHANGELOG-ru.rst
+.. _readme: https://github.com/wkpn/aio2ch/README-ru.rst
