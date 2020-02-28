@@ -77,7 +77,7 @@
     >>> threads
     (<Thread num="180981319">, ... )
 
-Получить топ тредов с доски с заданной сортировкой (*views*, *score* or *posts_count*)
+Получить топ тредов с доски с заданной сортировкой (*views*, *score* или *posts_count*)
 
 .. code-block:: python
 

@@ -249,4 +249,4 @@ class Api:
         await self.close()
 
     def __repr__(self) -> str:
-        return f'<Api api_url={self._api_client.api_url}>'
+        return f'<Api api_url="{self._api_client.api_url}">'

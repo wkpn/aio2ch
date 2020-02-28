@@ -39,5 +39,5 @@ class ApiClient:
         await self.client.aclose()
 
     def __repr__(self) -> str:
-        return f'<ApiClient api_url={self._api_url}>'
+        return f'<ApiClient api_url="{self._api_url}">'
 
