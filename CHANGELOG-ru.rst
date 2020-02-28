@@ -1,6 +1,25 @@
 Изменения
 =========
 
+`2.1.0`
+-------
+
+* текст сообщений в постах и тредах теперь без html-тэгов (т.е. без <...>)
+* класс ``File`` поделен на ``Image`` (jpg, png, gif), ``Video`` (webm, mp4) и ``Sticker`` (хз зачем это двачу)
+* добавлен параметр ``media_type`` к методу ``get_thread_media`` чтобы скачивать медиа определенного типа
+
+.. code-block:: python
+
+    >>> images_and_videos = await client.get_thread_media(thread, media_type=(Image, Video))
+
+    >>> just_images = await client.get_thread_media(thread, media_type=Image)
+
+    >>> any_files = await client.get_thread_media(thread)
+
+* улучшено покрытие тестами
+* тестовые файлы поделены на соответствующие модули
+* небольшой рефакторинг и улучшения
+
 `2.0.3`
 -------
 

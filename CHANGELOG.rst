@@ -1,6 +1,26 @@
 Changelog
 =========
 
+`2.1.0`
+-------
+
+* raw text in posts and threads is html-escaped now (e.g. without <...> tags)
+* more distinct ``File`` classes: ``Image`` (jpg, png, gif), ``Video`` (webm, mp4), ``Sticker`` (2ch-specific)
+* added ``media_type`` parameter to ``get_thread_media`` to allow specific attachments download
+
+.. code-block:: python
+
+    >>> images_and_videos = await client.get_thread_media(thread, media_type=(Image, Video))
+
+    >>> just_images = await client.get_thread_media(thread, media_type=Image)
+
+    >>> any_files = await client.get_thread_media(thread)
+
+* improved test coverage
+* split test files by test type
+* minor refactoring and improvements
+
+
 `2.0.3`
 -------
 

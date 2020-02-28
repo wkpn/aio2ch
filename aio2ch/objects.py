@@ -1,3 +1,20 @@
+from .helpers import clean_html_tags
+
+
+def cast_file_data_to_object(file):
+    types = {
+        1: Image,
+        2: Image,
+        4: Image,
+        6: Video,
+        10: Video,
+        100: Sticker
+    }
+    file_type = file['type']
+
+    return types[file_type](file)
+
+
 class Board:
     __slots__ = ('bump_limit', 'category', 'default_name',
                  'id', 'info', 'name', 'threads')
@@ -21,11 +38,11 @@ class Thread:
 
     def __init__(self, thread, board=None):
         self.board = board.id if isinstance(board, Board) else board
-        self.comment = thread['comment']
+        self.comment = clean_html_tags(thread['comment'])
         self.num = thread['num']
         self.posts_count = thread['posts_count']
         self.score = thread['score']
-        self.subject = thread['subject']
+        self.subject = clean_html_tags(thread['subject'])
         self.timestamp = thread['timestamp']
         self.views = thread['views']
 
@@ -41,15 +58,15 @@ class Post:
     def __init__(self, post):
         self.banned = post['banned']
         self.closed = post['closed']
-        self.comment = post['comment']
+        self.comment = clean_html_tags(post['comment'])
         self.endless = post['endless']
-        self.files = tuple(File(file) for file in post['files'])
+        self.files = tuple(cast_file_data_to_object(file) for file in post['files'])
         self.name = post['name']
         self.num = post['num']
         self.number = post['number']
         self.op = post['op']
         self.parent = post['parent']
-        self.subject = post['subject']
+        self.subject = clean_html_tags(post['subject'])
         self.timestamp = post['timestamp']
 
     def __repr__(self):
@@ -57,13 +74,53 @@ class Post:
 
 
 class File:
-    __slots__ = ('displayname', 'name', 'path', 'size')
+    __slots__ = ('thumbnail', 'tn_height', 'tn_width',
+                 'displayname', 'path', 'size',
+                 'type', 'height', 'width', 'name')  # common fields
 
     def __init__(self, file):
         self.displayname = file['displayname']
-        self.name = file['name']
         self.path = file['path']
         self.size = file['size']
+        self.height = file['height']
+        self.width = file['width']
+        self.tn_height = file['tn_height']
+        self.tn_width = file['tn_width']
+        self.thumbnail = file['thumbnail']
+        self.type = file['type']
+        self.name = file['name']
 
     def __repr__(self):
-        return f'<File name="{self.name}", path="{self.path}", size="{self.size}">'
+        return f'<{self.__class__.__name__} name="{self.name}", path="{self.path}", size="{self.size}">'
+
+
+class Image(File):
+    __slots__ = ('fullname', 'md5', 'nsfw')
+
+    def __init__(self, file):
+        super().__init__(file)
+
+        self.nsfw = file['nsfw']
+        self.fullname = file['fullname']
+        self.md5 = file['md5']
+
+
+class Video(Image):
+    __slots__ = ('duration', 'duration_secs')
+
+    def __init__(self, file):
+        super().__init__(file)
+
+        self.duration = file['duration']
+        self.duration_secs = file['duration_secs']
+
+
+class Sticker(File):
+    __slots__ = ('install', 'pack', 'sticker')
+
+    def __init__(self, file):
+        super().__init__(file)
+
+        self.install = file['install']
+        self.pack = file['pack']
+        self.sticker = file['sticker']

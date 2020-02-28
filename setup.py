@@ -1,10 +1,17 @@
-from aio2ch import __author__, __version__, __license__, __url__
+from aio2ch import __author__, __license__, __url__, __version__
 
 from setuptools import setup
 
 
-with open('README.rst', 'r', encoding='utf-8') as f:
-    long_description = f.read()
+with open('README.rst', 'r', encoding='utf-8') as readme:
+    long_description = readme.read()
+
+with open('requirements.txt', 'r', encoding='utf-8') as requirements:
+    install_requires = [dependency.strip('\n') for dependency in requirements]
+
+with open('requirements-dev.txt', 'r', encoding='utf-8') as requirements_dev:
+    tests_require = [dependency_dev.strip('\n') for dependency_dev in requirements_dev]
+
 
 setup(
     name='aio2ch',
@@ -17,15 +24,8 @@ setup(
     author=__author__,
     description='Fully asynchronous read-only API wrapper for 2ch.hk (dvach)',
     long_description=long_description,
-    install_requires=[
-        'httpx==0.11.1',
-        'aiofiles'
-    ],
-    tests_require=[
-        'pytest',
-        'pytest-asyncio',
-        'pytest-cov'
-    ],
+    install_requires=install_requires,
+    tests_require=tests_require,
     keywords=['2ch', 'Двач', 'Dvach', 'api', 'wrapper', 'async'],
     zip_safe=False,
     classifiers=[

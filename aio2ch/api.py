@@ -178,12 +178,14 @@ class Api:
     async def get_thread_media(self,
                                thread: Union[int, str, Thread],
                                board: Optional[Union[str, Board]] = None,
+                               media_type: Optional[Union[Type[File], Tuple[Type[File]]]] = None,
                                return_status: Optional[bool] = False
                                ) -> Union[Tuple[int, Tuple[File]], Tuple[File]]:
         """
         get thread media (webms, mp4, pictures etc.)
         :param thread:          thread to get media from
         :param board:           optional, needed if thread passes as int or str
+        :param media_type:      optional, get specific media type e.g. Images, Videos or Sticker
         :param return_status:   whether to return status code or not
         :return:                status code (optional) and/or tuple of Files
         """
@@ -196,6 +198,9 @@ class Api:
             posts = result
 
         files = sum((post.files for post in posts if post.files), ())
+
+        if media_type:
+            files = tuple(file for file in files if isinstance(file, media_type))
 
         if return_status:
             return status, files
@@ -227,7 +232,7 @@ class Api:
 
         await asyncio.gather(*download_tasks)
 
-    async def _get(self, url) -> Tuple[int, Dict]:
+    async def _get(self, url: str) -> Tuple[int, Dict]:
         status_code, json_data = await self._api_client.request(method='GET', url=url)
         return status_code, json_data
 

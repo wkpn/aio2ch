@@ -1,5 +1,6 @@
 # folders
 .pytest_cache/
+.venv/
 res/
 scripts/
 
