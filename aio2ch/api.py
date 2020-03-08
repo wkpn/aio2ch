@@ -2,7 +2,7 @@ __all__ = 'Api'
 
 from .exceptions import (
     InvalidBoardIdException,
-    InvalidThreadUrlException,
+    InvalidThreadException,
     NoBoardProvidedException,
     WrongSortMethodException
 )
@@ -15,6 +15,7 @@ from .objects import (
 from .helpers import (
     BOARDS_LIST,
     SORTING_METHODS,
+    is_url_like,
     get_board_and_thread_from_url
 )
 from .api_client import ApiClient
@@ -130,7 +131,7 @@ class Api:
             board_threads = sorted(board_threads, key=lambda t: (t.views, t.score), reverse=True)
         elif method == 'score':
             board_threads = sorted(board_threads, key=lambda t: (t.score, t.views), reverse=True)
-        elif method == 'posts':
+        elif method == 'posts_count':
             board_threads = sorted(board_threads, key=lambda t: (t.posts_count, t.views), reverse=True)
 
         board_threads = tuple(board_threads[:num])
@@ -156,16 +157,21 @@ class Api:
             board = thread.board
             thread = thread.num
         elif isinstance(thread, str):
-            board, thread = get_board_and_thread_from_url(thread)
-
-            if not all((board, thread)):
-                raise InvalidThreadUrlException(f'Invalid thread url {thread}')
+            # if url-like:
+            if is_url_like(thread):
+                board, thread = get_board_and_thread_from_url(thread)
+            else:
+                try:
+                    int(thread)
+                except ValueError:
+                    raise InvalidThreadException(f'Invalid thread {thread}')
         elif isinstance(board, Board):
             board = board.id
         elif not board:
             raise NoBoardProvidedException('Board id is not provided')
 
         if board not in BOARDS_LIST:
+            # thread='1234', board='thisboarddoesntexist
             raise InvalidBoardIdException(f'Board {board} doesn\'t exist')
 
         status, posts = await self._get(url=f'{self._api_client.api_url}/{board}/res/{thread}.json')
@@ -240,14 +246,14 @@ class Api:
     async def close(self) -> None:
         await self._api_client.close()
 
-    async def __aenter__(self) -> 'Api':
+    async def __aenter__(self) -> 'Api':  # pragma: nocover
         return self
 
     async def __aexit__(self,
                         exc_type: Optional[Type[BaseException]],
                         exc_val: Optional[BaseException],
-                        exc_tb: Optional[TracebackType]) -> None:
+                        exc_tb: Optional[TracebackType]) -> None:  # pragma: nocover
         await self.close()
 
-    def __repr__(self) -> str:
+    def __repr__(self) -> str:  # pragma: nocover
         return f'<Api api_url="{self._api_client.api_url}">'

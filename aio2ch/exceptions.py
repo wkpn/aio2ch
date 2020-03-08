@@ -6,7 +6,7 @@ class NoBoardProvidedException(Exception):
     pass
 
 
-class InvalidThreadUrlException(Exception):
+class InvalidThreadException(Exception):
     pass
 
 

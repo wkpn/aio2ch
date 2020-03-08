@@ -28,7 +28,7 @@ class Board:
         self.name = board['name']
         self.threads = board['threads']
 
-    def __repr__(self):
+    def __repr__(self):  # pragma: nocover
         return f'<Board name="{self.name}", id="{self.id}">'
 
 
@@ -46,7 +46,7 @@ class Thread:
         self.timestamp = thread['timestamp']
         self.views = thread['views']
 
-    def __repr__(self):
+    def __repr__(self):  # pragma: nocover
         return f'<Thread num="{self.num}">'
 
 
@@ -69,7 +69,7 @@ class Post:
         self.subject = clean_html_tags(post['subject'])
         self.timestamp = post['timestamp']
 
-    def __repr__(self):
+    def __repr__(self):  # pragma: nocover
         return f'<Post num="{self.num}">'
 
 
@@ -90,7 +90,7 @@ class File:
         self.type = file['type']
         self.width = file['width']
 
-    def __repr__(self):
+    def __repr__(self):  # pragma: nocover
         return f'<{self.__class__.__name__} name="{self.name}", path="{self.path}", size="{self.size}">'
 
 

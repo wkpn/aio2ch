@@ -31,3 +31,11 @@ async def test_get_thread_posts_with_status_by_url(client, thread_url):
 
     assert status >= 200
     assert all(isinstance(post, Post) for post in posts)
+
+
+@pytest.mark.asyncio
+async def test_get_thread_posts_with_board_instance(client, thread_as_number, board):
+    posts = await client.get_thread_posts(30972, board=board)
+
+    assert all(isinstance(post, Post) for post in posts)
+

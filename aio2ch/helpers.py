@@ -21,19 +21,20 @@ BOARDS_LIST: Tuple = (
 SORTING_METHODS = ('views', 'score', 'posts_count')
 
 
-def get_board_and_thread_from_url(thread_url: str) -> Union[Tuple[str, str], Tuple[None, None]]:
+def is_url_like(thread: str) -> bool:
+    pattern = 'https://[2a-z]+.[a-z]+/[a-z]+/res/[0-9]+.html'
+    match = re.compile(pattern).match(thread)
+
+    return True if match else False
+
+
+def get_board_and_thread_from_url(thread_url: str) -> Tuple[str, str]:
     # https://2ch.hk/test/res/30972.html
 
-    pattern = 'https://[2a-z]+.[a-z]+/[a-z]+/res/[0-9]+.html'
-    match = re.compile(pattern).match(thread_url)
+    split = re.split('[/.]', thread_url)
+    board, thread = split[4], split[6]
 
-    if match:
-        split = re.split('[/.]', thread_url)
-        board, thread = split[4], split[6]
-
-        return board, thread
-
-    return None, None
+    return board, thread
 
 
 def clean_html_tags(raw_text: str) -> str:

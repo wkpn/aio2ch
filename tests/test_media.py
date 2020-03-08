@@ -1,6 +1,8 @@
 from aio2ch.objects import File, Image, Sticker, Video
 
+import os
 import pytest
+import tempfile
 
 
 @pytest.mark.asyncio
@@ -68,3 +70,13 @@ async def test_get_thread_media_with_status_by_url(client, thread_url):
     assert status >= 200
     assert len(thread_media) > 0
     assert all(isinstance(file, File) for file in thread_media)
+
+
+@pytest.mark.asyncio
+async def test_download_thread_media(client, thread_media):
+    with tempfile.TemporaryDirectory() as temp_dir:
+        await client.download_thread_media(files=thread_media, save_to=temp_dir)
+
+        result = os.listdir(temp_dir)
+
+        assert len(result) == len(thread_media)

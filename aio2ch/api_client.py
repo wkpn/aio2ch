@@ -51,6 +51,5 @@ class ApiClient:
     async def close(self) -> None:
         await self._client.aclose()
 
-    def __repr__(self) -> str:
+    def __repr__(self) -> str:  # pragma: nocover
         return f'<ApiClient api_url="{self._api_url}">'
-

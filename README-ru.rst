@@ -138,7 +138,7 @@
 .. |License| image:: https://img.shields.io/pypi/l/aio2ch.svg
     :target: https://github.com/wkpn/aio2ch/blob/master/LICENSE
 .. |Changelog| image:: https://img.shields.io/badge/changelog-conventional-green.svg
-    :target: https://github.com/wkpn/aio2ch/blob/master/CHANGELOG.rst
+    :target: https://github.com/wkpn/aio2ch/blob/master/CHANGELOG-ru.rst
 .. |Downloads| image:: https://pepy.tech/badge/aio2ch
     :target: https://pepy.tech/project/aio2ch
 .. |PyPi| image:: https://img.shields.io/pypi/v/aio2ch.svg

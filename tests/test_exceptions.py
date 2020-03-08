@@ -1,6 +1,6 @@
 from aio2ch.exceptions import (
     InvalidBoardIdException,
-    InvalidThreadUrlException,
+    InvalidThreadException,
     NoBoardProvidedException,
     WrongSortMethodException
 )
@@ -9,9 +9,15 @@ import pytest
 
 
 @pytest.mark.asyncio
-async def test_get_board_threads_invalid_board(client):
+async def test_get_board_threads_invalid_board(client, invalid_board):
     with pytest.raises(InvalidBoardIdException):
-        await client.get_board_threads(board='thisboarddoesntexist')
+        await client.get_board_threads(board=invalid_board)
+
+
+@pytest.mark.asyncio
+async def test_get_top_board_threads_invalid_board(client, invalid_board):
+    with pytest.raises(InvalidBoardIdException):
+        await client.get_top_board_threads(board=invalid_board, method='views')
 
 
 @pytest.mark.asyncio
@@ -33,6 +39,12 @@ async def test_get_thread_posts_no_board_provided(client, thread):
 
 
 @pytest.mark.asyncio
-async def test_get_thread_posts_invalid_thread_url(client, invalid_thread_url):
-    with pytest.raises(InvalidThreadUrlException):
-        await client.get_thread_posts(invalid_thread_url)
+async def test_get_thread_posts_invalid_thread(client, invalid_thread):
+    with pytest.raises(InvalidThreadException):
+        await client.get_thread_posts(invalid_thread)
+
+
+@pytest.mark.asyncio
+async def test_get_thread_posts_invalid_board_id(client, thread_as_number, invalid_board):
+    with pytest.raises(InvalidBoardIdException):
+        await client.get_thread_posts(thread_as_number, board=invalid_board)
