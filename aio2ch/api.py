@@ -28,7 +28,7 @@ from typing import (
     Type,
     Union
 )
-from types import TracebackType
+from types import FunctionType, TracebackType
 
 import aiofiles
 import asyncio
@@ -37,14 +37,15 @@ import asyncio
 class Api:
     __slots__ = '_api_client'
 
-    def __init__(self, api_url: Optional[str] = None, **kwargs: Any):
+    def __init__(self, api_url: Optional[str] = None, json_loads: Optional[FunctionType] = None, **kwargs: Any):
         """
         main API class
-        :param api_url:   main API endpoint. can be any of these: 2ch.hk, 2ch.pm (rest are redirects to 2ch.hk)
-        :param kwargs:    any additional args you want to pass to the client e.g. proxies or headers
+        :param api_url:     main API endpoint. can be any of these: 2ch.hk, 2ch.pm (rest are redirects to 2ch.hk)
+        :param json_loads:  custom json loads function for content decoding (default is json.loads)
+        :param kwargs:      any additional args you want to pass to the client e.g. proxies or headers
         """
 
-        self._api_client: ApiClient = ApiClient(api_url=api_url, **kwargs)
+        self._api_client: ApiClient = ApiClient(api_url=api_url, json_loads=json_loads, **kwargs)
 
     async def get_boards(self,
                          return_status: Optional[bool] = False

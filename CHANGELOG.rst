@@ -1,6 +1,13 @@
 Changelog
 =========
 
+`2.1.1`
+-------
+
+* allow to pass custom ``json_loads`` function to ``api_client`` (like ``orjson.loads`` or ``ujson.loads`` etc.)
+* minor refactoring
+
+
 `2.1.0`
 -------
 

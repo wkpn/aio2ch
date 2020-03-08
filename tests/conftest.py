@@ -12,6 +12,24 @@ async def client():
 
 
 @pytest.fixture
+async def client_ujson():
+    from ujson import loads as ujson_loads
+
+    api_client = Api(json_loads=ujson_loads)
+    yield api_client
+    await api_client.close()
+
+
+@pytest.fixture
+async def client_orjson():
+    from orjson import loads as orjson_loads
+
+    api_client = Api(json_loads=orjson_loads)
+    yield api_client
+    await api_client.close()
+
+
+@pytest.fixture
 def board():
     test_board_data = {
         'bump_limit': '',

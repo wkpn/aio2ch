@@ -74,21 +74,21 @@ class Post:
 
 
 class File:
-    __slots__ = ('thumbnail', 'tn_height', 'tn_width',
-                 'displayname', 'path', 'size',
-                 'type', 'height', 'width', 'name')  # common fields
+    __slots__ = ('displayname', 'height', 'name', 'path',
+                 'size', 'thumbnail', 'tn_height', 'tn_width',
+                 'type', 'width')  # common fields
 
     def __init__(self, file):
         self.displayname = file['displayname']
+        self.height = file['height']
+        self.name = file['name']
         self.path = file['path']
         self.size = file['size']
-        self.height = file['height']
-        self.width = file['width']
+        self.thumbnail = file['thumbnail']
         self.tn_height = file['tn_height']
         self.tn_width = file['tn_width']
-        self.thumbnail = file['thumbnail']
         self.type = file['type']
-        self.name = file['name']
+        self.width = file['width']
 
     def __repr__(self):
         return f'<{self.__class__.__name__} name="{self.name}", path="{self.path}", size="{self.size}">'
@@ -100,9 +100,9 @@ class Image(File):
     def __init__(self, file):
         super().__init__(file)
 
-        self.nsfw = file['nsfw']
         self.fullname = file['fullname']
         self.md5 = file['md5']
+        self.nsfw = file['nsfw']
 
 
 class Video(Image):

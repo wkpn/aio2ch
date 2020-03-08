@@ -5,16 +5,23 @@ from typing import (
     Optional,
     Tuple
 )
+from types import FunctionType
 
 from .helpers import API_URL
 
 
 class ApiClient:
-    __slots__ = '_api_url', 'client'
+    __slots__ = '_api_url', '_client', '_json_loads'
 
-    def __init__(self, api_url: Optional[str], **kwargs: Any):
+    def __init__(self, api_url: Optional[str], json_loads: Optional[FunctionType] = None, **kwargs: Any):
         self._api_url: str = API_URL if not api_url else api_url
-        self.client: AsyncClient = AsyncClient(**kwargs)
+
+        if json_loads:
+            self._json_loads = json_loads
+        else:
+            from json import loads  # fallback to built-in library
+            self._json_loads = loads
+        self._client: AsyncClient = AsyncClient(**kwargs)
 
     async def request(self, method: str, url: str) -> Tuple[int, Dict]:
         """
@@ -23,9 +30,15 @@ class ApiClient:
         :param url:       request url
         :return:          response with status code and json data on success
         """
-        response = await self.client.request(method=method, url=url)
+        response = await self._client.request(method=method, url=url)
 
-        return response.status_code, response.json()
+        json_data = self._json_loads(response.content)
+
+        return response.status_code, json_data
+
+    @property
+    def client(self) -> AsyncClient:
+        return self._client
 
     @property
     def api_url(self) -> str:
@@ -36,7 +49,7 @@ class ApiClient:
         self._api_url = api_url
 
     async def close(self) -> None:
-        await self.client.aclose()
+        await self._client.aclose()
 
     def __repr__(self) -> str:
         return f'<ApiClient api_url="{self._api_url}">'
