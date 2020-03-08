@@ -171,7 +171,6 @@ class Api:
             raise NoBoardProvidedException('Board id is not provided')
 
         if board not in BOARDS_LIST:
-            # thread='1234', board='thisboarddoesntexist
             raise InvalidBoardIdException(f'Board {board} doesn\'t exist')
 
         status, posts = await self._get(url=f'{self._api_client.api_url}/{board}/res/{thread}.json')
