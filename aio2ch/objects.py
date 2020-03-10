@@ -1,7 +1,9 @@
+from typing import Any, Dict, Optional, Union
+
 from .helpers import clean_html_tags
 
 
-def cast_file_data_to_object(file):
+def cast_file_data_to_object(file: Dict[str, Any]):
     types = {
         1: Image,
         2: Image,
@@ -19,7 +21,7 @@ class Board:
     __slots__ = ('bump_limit', 'category', 'default_name',
                  'id', 'info', 'name', 'threads')
 
-    def __init__(self, board):
+    def __init__(self, board: Dict[str, Any]):
         self.bump_limit = board['bump_limit']
         self.category = board['category']
         self.default_name = board['default_name']
@@ -36,7 +38,7 @@ class Thread:
     __slots__ = ('board', 'comment', 'num', 'posts_count',
                  'score', 'subject', 'timestamp', 'views')
 
-    def __init__(self, thread, board=None):
+    def __init__(self, thread: Dict[str, Any], board: Optional[Union[Dict[str, Any], str]] = None):
         self.board = board.id if isinstance(board, Board) else board
         self.comment = clean_html_tags(thread['comment'])
         self.num = thread['num']
@@ -55,7 +57,7 @@ class Post:
                  'files', 'name', 'num', 'number', 'op',
                  'parent', 'subject', 'timestamp')
 
-    def __init__(self, post):
+    def __init__(self, post: Dict[str, Any]):
         self.banned = post['banned']
         self.closed = post['closed']
         self.comment = clean_html_tags(post['comment'])
@@ -78,7 +80,7 @@ class File:
                  'size', 'thumbnail', 'tn_height', 'tn_width',
                  'type', 'width')  # common fields
 
-    def __init__(self, file):
+    def __init__(self, file: Dict[str, Any]):
         self.displayname = file['displayname']
         self.height = file['height']
         self.name = file['name']
@@ -97,7 +99,7 @@ class File:
 class Image(File):
     __slots__ = ('fullname', 'md5', 'nsfw')
 
-    def __init__(self, file):
+    def __init__(self, file: Dict[str, Any]):
         super().__init__(file)
 
         self.fullname = file['fullname']
@@ -108,7 +110,7 @@ class Image(File):
 class Video(Image):
     __slots__ = ('duration', 'duration_secs')
 
-    def __init__(self, file):
+    def __init__(self, file: Dict[str, Any]):
         super().__init__(file)
 
         self.duration = file['duration']
@@ -118,7 +120,7 @@ class Video(Image):
 class Sticker(File):
     __slots__ = ('install', 'pack', 'sticker')
 
-    def __init__(self, file):
+    def __init__(self, file: Dict[str, Any]):
         super().__init__(file)
 
         self.install = file['install']

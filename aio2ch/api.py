@@ -157,7 +157,6 @@ class Api:
             board = thread.board
             thread = thread.num
         elif isinstance(thread, str):
-            # if url-like:
             if is_url_like(thread):
                 board, thread = get_board_and_thread_from_url(thread)
             else:

@@ -14,10 +14,10 @@ class ApiClient:
     __slots__ = '_api_url', '_client', '_json_loads'
 
     def __init__(self, api_url: Optional[str], json_loads: Optional[FunctionType] = None, **kwargs: Any):
-        self._api_url: str = API_URL if not api_url else api_url
+        self._api_url: str = api_url or API_URL
 
         if json_loads:
-            self._json_loads = json_loads
+            self._json_loads: FunctionType = json_loads
         else:
             from json import loads  # fallback to built-in library
             self._json_loads = loads

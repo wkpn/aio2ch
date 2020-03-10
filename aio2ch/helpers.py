@@ -1,4 +1,4 @@
-from typing import Tuple, Union
+from typing import Tuple
 
 import re
 
@@ -18,7 +18,7 @@ BOARDS_LIST: Tuple = (
     'sad', 'fi', 'nvr', 'ind', 'ld', 'fem', 'vr', 'arg', 'char', 'hv', 'math', 'catalog', 'api', 'test'
 )
 
-SORTING_METHODS = ('views', 'score', 'posts_count')
+SORTING_METHODS: Tuple = ('views', 'score', 'posts_count')
 
 
 def is_url_like(thread: str) -> bool:
