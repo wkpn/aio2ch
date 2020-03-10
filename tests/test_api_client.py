@@ -41,7 +41,7 @@ async def test_api_client_ujson_loads_function(client_ujson):
 
 
 @pytest.mark.asyncio
-@pytest.mark.skipif(orjson is None, reason='orson is not installed')
+@pytest.mark.skipif(orjson is None, reason='orjson is not installed')
 async def test_api_client_orjson_loads_function(client_orjson):
     from orjson import loads
 
