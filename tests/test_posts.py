@@ -1,4 +1,4 @@
-from aio2ch.objects import Post
+from aio2ch import Post
 
 import pytest
 

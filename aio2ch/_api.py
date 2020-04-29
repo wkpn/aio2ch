@@ -1,27 +1,29 @@
-__all__ = 'Api'
-
-from .exceptions import (
+from ._api_client import ApiClient
+from ._exceptions import (
     InvalidBoardIdException,
     InvalidThreadException,
     NoBoardProvidedException,
     WrongSortMethodException
 )
-from .objects import (
-    Board,
-    File,
-    Post,
-    Thread
-)
-from .helpers import (
+from ._helpers import (
     BOARDS_LIST,
     SORTING_METHODS,
     is_url_like,
     get_board_and_thread_from_url
 )
-from .api_client import ApiClient
+from ._objects import (
+    Board,
+    File,
+    Post,
+    Thread
+)
 
+from aiofiles import open as aio_open
+from asyncio import gather, Semaphore
+from types import TracebackType
 from typing import (
     Any,
+    Callable,
     Dict,
     Iterable,
     Optional,
@@ -29,16 +31,15 @@ from typing import (
     Type,
     Union
 )
-from types import FunctionType, TracebackType
-
-import aiofiles
-import asyncio
 
 
 class Api:
-    __slots__ = '_api_client'
+    __slots__ = "_api_client"
 
-    def __init__(self, api_url: Optional[str] = None, json_loads: Optional[FunctionType] = None, **kwargs: Any):
+    def __init__(self,
+                 api_url: Optional[str] = None,
+                 json_loads: Optional[Callable] = None,
+                 **kwargs: Any):
         """
         main API class
         :param api_url:     main API endpoint. can be any of these: 2ch.hk, 2ch.pm (rest are redirects to 2ch.hk)
@@ -82,10 +83,10 @@ class Api:
             board = board.id
 
         if board not in BOARDS_LIST:
-            raise InvalidBoardIdException(f'Board {board} doesn\'t exist')
+            raise InvalidBoardIdException(f"Board {board} doesn't exist")
 
-        status, threads = await self._get(url=f'{self._api_client.api_url}/{board}/threads.json')
-        threads = threads['threads']
+        status, threads = await self._get(url=f"{self._api_client.api_url}/{board}/threads.json")
+        threads = threads["threads"]
         threads = tuple(Thread(thread, board) for thread in threads)
 
         if keywords:
@@ -112,13 +113,13 @@ class Api:
         """
 
         if method not in SORTING_METHODS:
-            raise WrongSortMethodException(f'Cannot sort threads using {method} method')
+            raise WrongSortMethodException(f"Cannot sort threads using {method} method")
 
         if isinstance(board, Board):
             board = board.id
 
         if board not in BOARDS_LIST:
-            raise InvalidBoardIdException(f'Board {board} doesn\'t exist')
+            raise InvalidBoardIdException(f"Board {board} doesn't exist")
 
         result = await self.get_board_threads(board, return_status=return_status)
 
@@ -127,11 +128,11 @@ class Api:
         else:
             board_threads = result
 
-        if method == 'views':
+        if method == "views":
             board_threads = sorted(board_threads, key=lambda t: (t.views, t.score), reverse=True)
-        elif method == 'score':
+        elif method == "score":
             board_threads = sorted(board_threads, key=lambda t: (t.score, t.views), reverse=True)
-        elif method == 'posts_count':
+        elif method == "posts_count":
             board_threads = sorted(board_threads, key=lambda t: (t.posts_count, t.views), reverse=True)
 
         board_threads = tuple(board_threads[:num])
@@ -163,17 +164,17 @@ class Api:
                 try:
                     int(thread)
                 except ValueError:
-                    raise InvalidThreadException(f'Invalid thread {thread}')
+                    raise InvalidThreadException(f"Invalid thread {thread}")
         elif isinstance(board, Board):
             board = board.id
         elif not board:
-            raise NoBoardProvidedException('Board id is not provided')
+            raise NoBoardProvidedException("Board id is not provided")
 
         if board not in BOARDS_LIST:
-            raise InvalidBoardIdException(f'Board {board} doesn\'t exist')
+            raise InvalidBoardIdException(f"Board {board} doesn't exist")
 
-        status, posts = await self._get(url=f'{self._api_client.api_url}/{board}/res/{thread}.json')
-        posts = posts['threads'][0]['posts']
+        status, posts = await self._get(url=f"{self._api_client.api_url}/{board}/res/{thread}.json")
+        posts = posts["threads"][0]["posts"]
         posts = tuple(Post(post) for post in posts)
 
         if return_status:
@@ -224,27 +225,27 @@ class Api:
 
         async def download(api_client, semaphore, file):
             async with semaphore:
-                filename = f'{save_to}/{file.name}'
-                url = f'{api_client.api_url}{file.path}'
+                filename = f"{save_to}/{file.name}"
+                url = f"{api_client.api_url}{file.path}"
 
-                async with aiofiles.open(filename, 'wb') as download_file:
-                    async with api_client.client.stream('GET', url) as stream:
+                async with aio_open(filename, "wb") as download_file:
+                    async with api_client.client.stream("GET", url) as stream:
                         async for chunk in stream.aiter_bytes():
                             await download_file.write(chunk)
 
-        semaphore = asyncio.Semaphore(bound)
+        semaphore = Semaphore(bound)
         download_tasks = (download(self._api_client, semaphore, file) for file in files)
 
-        await asyncio.gather(*download_tasks)
+        await gather(*download_tasks)
 
     async def _get(self, url: str) -> Tuple[int, Dict]:
-        status_code, json_data = await self._api_client.request(method='GET', url=url)
+        status_code, json_data = await self._api_client.request(method="GET", url=url)
         return status_code, json_data
 
     async def close(self) -> None:
         await self._api_client.close()
 
-    async def __aenter__(self) -> 'Api':  # pragma: nocover
+    async def __aenter__(self) -> "Api":  # pragma: nocover
         return self
 
     async def __aexit__(self,
@@ -254,4 +255,4 @@ class Api:
         await self.close()
 
     def __repr__(self) -> str:  # pragma: nocover
-        return f'<Api api_url="{self._api_client.api_url}">'
+        return f"<Api api_url='{self._api_client.api_url}'>"

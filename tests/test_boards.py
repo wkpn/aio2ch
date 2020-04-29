@@ -1,4 +1,4 @@
-from aio2ch.objects import Board
+from aio2ch import Board
 
 import pytest
 

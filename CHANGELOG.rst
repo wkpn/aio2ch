@@ -1,6 +1,13 @@
 Changelog
 =========
 
+`3.0.0`
+-------
+
+* switched to private module names. All imports should import from the top-level package only, such as ``from aio2ch import Board``, rather than importing from privately namespaced modules such as ``from aio2ch._objects import Board``
+* minor refactoring
+
+
 `2.1.1`
 -------
 

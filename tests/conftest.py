@@ -1,44 +1,47 @@
-from aio2ch.objects import Board, Thread, Image, Video, Sticker
-from aio2ch import Api
+from aio2ch import (
+    Api,
+    Board,
+    Thread,
+    Image,
+    Video,
+    Sticker
+)
 
 import pytest
 
 
 @pytest.fixture
 async def client():
-    api_client = Api(timeout=10.0)
-    yield api_client
-    await api_client.close()
+    async with Api(timeout=10.0) as api_client:
+        yield api_client
 
 
 @pytest.fixture
 async def client_ujson():
     from ujson import loads as ujson_loads
 
-    api_client = Api(json_loads=ujson_loads)
-    yield api_client
-    await api_client.close()
+    async with Api(json_loads=ujson_loads) as api_client:
+        yield api_client
 
 
 @pytest.fixture
 async def client_orjson():
     from orjson import loads as orjson_loads
 
-    api_client = Api(json_loads=orjson_loads)
-    yield api_client
-    await api_client.close()
+    async with Api(json_loads=orjson_loads) as api_client:
+        yield api_client
 
 
 @pytest.fixture
 def board():
     test_board_data = {
-        'bump_limit': '',
-        'category': '',
-        'default_name': '',
-        'id': 'test',
-        'info': '',
-        'name': 'test',
-        'threads': ''
+        "bump_limit": "",
+        "category": "",
+        "default_name": "",
+        "id": "test",
+        "info": "",
+        "name": "test",
+        "threads": ""
     }
 
     return Board(test_board_data)
@@ -47,15 +50,15 @@ def board():
 @pytest.fixture
 def thread():
     test_thread_data = {
-        'comment': '',
-        'num': 30972,
-        'posts_count': '',
-        'score': '',
-        'subject': '',
-        'timestamp': '',
-        'views': ''
+        "comment": "",
+        "num": 30972,
+        "posts_count": "",
+        "score": "",
+        "subject": "",
+        "timestamp": "",
+        "views": ""
     }
-    test_board = 'test'
+    test_board = "test"
 
     return Thread(test_thread_data, test_board)
 
@@ -67,17 +70,17 @@ def thread_as_number():
 
 @pytest.fixture
 def thread_url():
-    return 'https://2ch.hk/test/res/30972.html'
+    return "https://2ch.hk/test/res/30972.html"
 
 
 @pytest.fixture
 def invalid_thread():
-    return 'invalid-thread'
+    return "invalid-thread"
 
 
 @pytest.fixture
 def invalid_board():
-    return 'thisboarddoesntexist'
+    return "thisboarddoesntexist"
 
 
 @pytest.fixture
@@ -87,20 +90,20 @@ def number_of_threads(number=5):
 
 @pytest.fixture
 def raw_text():
-    return 'КУКУ ТАМ ОНЛИФЕНС СЛИЛИ, ЕСТЬ ЧТО У КОГО?<br>' \
-           '<a href=\"https:&#47;&#47;tjournal.ru&#47;internet&#47;146526-v-set-popali-terabayty-' \
-           'dannyh-onlyfans-sayta-gde-pornozvezdy-i-modeli-razmeshchayut-platnye-eroticheskie-foto-i-video\" ' \
-           'target=\"_blank\" rel=\"nofollow noopener noreferrer\">https:&#47;&#47;tjournal.ru&#47;internet&#47;' \
-           '146526-v-set-popali-terabayty-dannyh-onlyfans-sayta-gde-pornozvezdy-i-modeli-razmeshchayut-platnye-' \
-           'eroticheskie-foto-i-video</a><br><br>Давайте братья скажите где скачать эти терабайты'
+    return "КУКУ ТАМ ОНЛИФЕНС СЛИЛИ, ЕСТЬ ЧТО У КОГО?<br>" \
+           "<a href=\"https:&#47;&#47;tjournal.ru&#47;internet&#47;146526-v-set-popali-terabayty-" \
+           "dannyh-onlyfans-sayta-gde-pornozvezdy-i-modeli-razmeshchayut-platnye-eroticheskie-foto-i-video\" " \
+           "target=\"_blank\" rel=\"nofollow noopener noreferrer\">https:&#47;&#47;tjournal.ru&#47;internet&#47;" \
+           "146526-v-set-popali-terabayty-dannyh-onlyfans-sayta-gde-pornozvezdy-i-modeli-razmeshchayut-platnye-" \
+           "eroticheskie-foto-i-video</a><br><br>Давайте братья скажите где скачать эти терабайты"
 
 
 @pytest.fixture
 def clean_text():
-    return 'КУКУ ТАМ ОНЛИФЕНС СЛИЛИ, ЕСТЬ ЧТО У КОГО?\n' \
-           'https://tjournal.ru/internet/146526-v-set-popali-terabayty-dannyh-onlyfans-' \
-           'sayta-gde-pornozvezdy-i-modeli-razmeshchayut-platnye-eroticheskie-foto-i-video\n\n' \
-           'Давайте братья скажите где скачать эти терабайты'
+    return "КУКУ ТАМ ОНЛИФЕНС СЛИЛИ, ЕСТЬ ЧТО У КОГО?\n" \
+           "https://tjournal.ru/internet/146526-v-set-popali-terabayty-dannyh-onlyfans-" \
+           "sayta-gde-pornozvezdy-i-modeli-razmeshchayut-platnye-eroticheskie-foto-i-video\n\n" \
+           "Давайте братья скажите где скачать эти терабайты"
 
 
 @pytest.fixture

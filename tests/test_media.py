@@ -1,4 +1,4 @@
-from aio2ch.objects import File, Image, Sticker, Video
+from aio2ch import File, Image, Sticker, Video
 
 import os
 import pytest

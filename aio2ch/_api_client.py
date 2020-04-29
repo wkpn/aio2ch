@@ -1,26 +1,29 @@
+from ._helpers import API_URL
+
 from httpx import AsyncClient
 from typing import (
     Any,
+    Callable,
     Dict,
     Optional,
     Tuple
 )
-from types import FunctionType
-
-from .helpers import API_URL
 
 
 class ApiClient:
-    __slots__ = '_api_url', '_client', '_json_loads'
+    __slots__ = "_api_url", "_client", "_json_loads"
 
-    def __init__(self, api_url: Optional[str], json_loads: Optional[FunctionType] = None, **kwargs: Any):
+    def __init__(self,
+                 api_url: Optional[str] = None,
+                 json_loads: Optional[Callable] = None,
+                 **kwargs: Any):
         self._api_url: str = api_url or API_URL
 
         if json_loads:
-            self._json_loads: FunctionType = json_loads
+            self._json_loads: Callable = json_loads
         else:
-            from json import loads  # fallback to built-in library
-            self._json_loads = loads
+            from json import loads as json_loads  # fallback to built-in library
+            self._json_loads: Callable = json_loads
         self._client: AsyncClient = AsyncClient(**kwargs)
 
     async def request(self, method: str, url: str) -> Tuple[int, Dict]:
@@ -37,7 +40,7 @@ class ApiClient:
         return response.status_code, json_data
 
     @property
-    def client(self) -> AsyncClient:
+    def client(self) -> "AsyncClient":
         return self._client
 
     @property
@@ -52,4 +55,4 @@ class ApiClient:
         await self._client.aclose()
 
     def __repr__(self) -> str:  # pragma: nocover
-        return f'<ApiClient api_url="{self._api_url}">'
+        return f"<ApiClient api_url='{self._api_url}'>"
