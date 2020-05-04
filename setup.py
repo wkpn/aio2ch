@@ -11,6 +11,10 @@ def get_version(package):
     return version
 
 
+def get_packages(package):
+    return [str(path.parent) for path in Path(package).glob("**/__init__.py")]
+
+
 with open("README.rst", "r", encoding="utf-8") as readme:
     long_description = readme.read()
 
@@ -25,7 +29,7 @@ setup(
     name="aio2ch",
     version=get_version("aio2ch"),
     python_requires=">=3.6",
-    packages=["aio2ch"],
+    packages=get_packages('aio2ch'),
     package_dir={"aio2ch": "aio2ch"},
     url="https://github.com/wkpn/aio2ch",
     license="MIT",

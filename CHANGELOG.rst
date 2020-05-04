@@ -1,6 +1,12 @@
 Changelog
 =========
 
+`3.1.1`
+-------
+
+* fix package import
+
+
 `3.1.0`
 -------
 
