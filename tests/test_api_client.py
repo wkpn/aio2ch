@@ -17,7 +17,7 @@ except ImportError:
 
 @pytest.mark.asyncio
 async def test_api_client_url(client):
-    assert client._api_client.api_url == "https://2ch.hk"
+    assert client._api_client._api_url == "https://2ch.hk"
 
 
 @pytest.mark.asyncio

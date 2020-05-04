@@ -13,6 +13,7 @@ Requirements
 
 -  httpx_
 -  aiofiles_
+-  click_
 
 Install with pip
 ----------------
@@ -147,3 +148,4 @@ Download all thread media
 .. |Logo| image:: https://raw.githubusercontent.com/wkpn/aio2ch/master/docs/img/banner.jpg
 .. _httpx: https://github.com/encode/httpx
 .. _aiofiles: https://github.com/Tinche/aiofiles
+.. _click: https://github.com/pallets/click

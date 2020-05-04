@@ -3,9 +3,9 @@ from typing import Tuple
 import re
 
 
-API_URL = "https://2ch.hk"
+API_URL: str = "https://2ch.hk"
 
-BOARDS_LIST: Tuple = (
+BOARDS_LIST: Tuple[str, ...] = (
     "b", "vg", "po", "fag", "news", "2d", "v", "hw", "sex", "a", "au", "biz", "wm", "soc", "wrk", "rf", "pr",
     "brg", "me", "mobi", "kpop", "c", "w", "hi", "mov", "fiz", "ftb", "sp", "cg", "ma", "hry", "dr", "tes",
     "s", "alco", "ra", "obr", "em", "di", "gsg", "ch", "mlp", "mus", "fa", "ga", "fs", "zog", "psy", "whn",
@@ -18,7 +18,7 @@ BOARDS_LIST: Tuple = (
     "sad", "fi", "nvr", "ind", "ld", "fem", "vr", "arg", "char", "hv", "math", "catalog", "api", "test"
 )
 
-SORTING_METHODS: Tuple = ("views", "score", "posts_count")
+SORTING_METHODS: Tuple[str, ...] = ("views", "score", "posts_count")
 
 
 def clean_html_tags(raw_text: str) -> str:

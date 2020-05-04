@@ -19,6 +19,7 @@ from ._objects import (
     Post,
     Thread,
     # file types
+    MEDIA_TYPES,
     File,
     Image,
     Sticker,
@@ -45,6 +46,7 @@ __all__ = [
     "Post",
     "Thread",
     # file types
+    "MEDIA_TYPES",
     "File",
     "Image",
     "Sticker",

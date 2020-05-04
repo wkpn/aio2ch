@@ -1,6 +1,14 @@
 Changelog
 =========
 
+`3.1.0`
+-------
+
+* added console script to quickly download thread media. See ``console_usage.sh`` in ``examples`` folder for more details
+* fixed inheritance problems when downloading media
+* minor refactoring
+
+
 `3.0.0`
 -------
 

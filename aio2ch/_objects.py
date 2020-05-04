@@ -107,14 +107,20 @@ class Image(File):
         self.nsfw = file["nsfw"]
 
 
-class Video(Image):
-    __slots__ = ("duration", "duration_secs")
+class Video(File):
+    __slots__ = ("duration", "duration_secs", "fullname", "md5", "nsfw")
 
     def __init__(self, file: Dict[str, Any]):
         super().__init__(file)
 
-        self.duration = file["duration"]
-        self.duration_secs = file["duration_secs"]
+        self.fullname = file["fullname"]
+        self.md5 = file["md5"]
+        self.nsfw = file["nsfw"]
+
+        #  on May 3 it was found that these fields might not be present
+        #  if both height and width are 0
+        self.duration = file.get("duration", None)
+        self.duration_secs = file.get("duration_secs", None)
 
 
 class Sticker(File):
@@ -126,3 +132,6 @@ class Sticker(File):
         self.install = file["install"]
         self.pack = file["pack"]
         self.sticker = file["sticker"]
+
+
+MEDIA_TYPES = {Image, Video, Sticker}

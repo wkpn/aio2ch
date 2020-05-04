@@ -12,6 +12,7 @@ from ._helpers import (
     get_board_and_thread_from_url
 )
 from ._objects import (
+    MEDIA_TYPES,
     Board,
     File,
     Post,
@@ -205,7 +206,10 @@ class Api:
 
         files = sum((post.files for post in posts if post.files), ())
 
-        if media_type:
+        if media_type and not isinstance(media_type, tuple):
+            media_type = (media_type,)
+
+        if media_type and set(media_type) != MEDIA_TYPES:
             files = tuple(file for file in files if isinstance(file, media_type))
 
         if return_status:
@@ -213,7 +217,7 @@ class Api:
         return files
 
     async def download_thread_media(self,
-                                    files: Iterable[File],
+                                    files: Tuple[File, ...],
                                     save_to: str,
                                     bound: Optional[int] = 10) -> None:
         """
