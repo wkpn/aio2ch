@@ -48,6 +48,7 @@ Or you can use it as a context manager
 
     >>> async with Api() as client:
     ...     boards = await client.get_boards()
+    >>>     ...
 
 Get all boards
 

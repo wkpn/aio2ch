@@ -17,7 +17,7 @@ async def main():
         keywords_threads = await client.get_board_threads(board="test", keywords=("keywords", "to", "search", "for"))
 
         # ok, we know for sure that this thread (https://2ch.hk/test/res/30972.html) has some media in it, lets get it
-        thread_media = await client.get_thread_media(30972, "test")
+        thread_media = await client.get_thread_media(31814, "test")
 
         # thread_media is a list of Files, lets save them to our folder (make sure it exists first)
         await client.download_thread_media(thread_media, save_to="./downloads")

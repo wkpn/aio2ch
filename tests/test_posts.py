@@ -35,7 +35,7 @@ async def test_get_thread_posts_with_status_by_url(client, thread_url):
 
 @pytest.mark.asyncio
 async def test_get_thread_posts_with_board_instance(client, thread_as_number, board):
-    posts = await client.get_thread_posts(30972, board=board)
+    posts = await client.get_thread_posts(thread_as_number, board=board)
 
     assert all(isinstance(post, Post) for post in posts)
 

@@ -48,6 +48,7 @@
 
     >>> async with Api() as client:
     ...     boards = await client.get_boards()
+    >>>     ...
 
 Получить все доски
 

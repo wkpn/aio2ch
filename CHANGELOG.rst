@@ -1,6 +1,13 @@
 Changelog
 =========
 
+`3.2.0`
+-------
+
+* bump `httpx` version
+* update tests
+
+
 `3.1.2`
 -------
 

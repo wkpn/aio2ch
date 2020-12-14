@@ -7,8 +7,8 @@ def test_clean_html_tags(raw_text, clean_text):
     assert clean == clean_text
 
 
-def test_get_board_and_thread_from_url(thread_url):
+def test_get_board_and_thread_from_url(thread_url, thread_as_number):
     board, thread = get_board_and_thread_from_url(thread_url)
 
     assert board == "test"
-    assert thread == "30972"
+    assert thread == f"{thread_as_number}"

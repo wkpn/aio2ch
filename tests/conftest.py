@@ -48,10 +48,10 @@ def board():
 
 
 @pytest.fixture
-def thread():
+def thread(thread_as_number):
     test_thread_data = {
         "comment": "",
-        "num": 30972,
+        "num": thread_as_number,
         "posts_count": "",
         "score": "",
         "subject": "",
@@ -65,12 +65,12 @@ def thread():
 
 @pytest.fixture
 def thread_as_number():
-    return 30972
+    return 31814
 
 
 @pytest.fixture
-def thread_url():
-    return "https://2ch.hk/test/res/30972.html"
+def thread_url(thread_as_number):
+    return f"https://2ch.hk/test/res/{thread_as_number}.html"
 
 
 @pytest.fixture

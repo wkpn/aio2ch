@@ -21,7 +21,7 @@ async def test_get_top_board_threads_invalid_board(client, invalid_board):
 
 
 @pytest.mark.asyncio
-async def test_get_top_board_threads_str_wrong_sort_method(client):
+async def test_get_top_board_threads_str_wrong_sort_method(client, board):
     with pytest.raises(WrongSortMethodException):
         await client.get_top_board_threads(board="test", method="WrongSortMethod")
 
