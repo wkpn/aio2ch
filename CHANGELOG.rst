@@ -1,6 +1,13 @@
 Changelog
 =========
 
+`3.2.1`
+-------
+
+* update requirements
+* update tests
+
+
 `3.2.0`
 -------
 

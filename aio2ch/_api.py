@@ -8,8 +8,8 @@ from ._exceptions import (
 from ._helpers import (
     BOARDS_LIST,
     SORTING_METHODS,
-    is_url_like,
-    get_board_and_thread_from_url
+    get_board_and_thread_from_url,
+    is_url_like
 )
 from ._objects import (
     MEDIA_TYPES,
@@ -60,7 +60,7 @@ class Api:
         """
 
         status, boards = await self._get(url=f'{self._api_client.api_url}/boards.json')
-        boards = boards['boards']
+        boards = boards["boards"]
         boards = tuple(Board(board) for board in boards)
 
         if return_status:
